@@ -23,6 +23,10 @@ final class H3
     public const NUM_BASE_CELLS = 122;
     public const NUM_ICOSA_FACES = 20;
     public const NUM_PENTAGONS = 12;
+    public const INVALID_H3_INDEX = 0;
+    public const MAX_CELL_BNDRY_VERTS = 10;
+    public const DEGS_TO_RADS = 0.01745329251994329576;
+    public const RADS_TO_DEGS = 57.29577951308232087679;
 
     private const UNIT_VECS = [
         0 => [0, 0, 0],
@@ -1987,5 +1991,38 @@ final class H3
     {
         $digitOffset = C::H3_PER_DIGIT_OFFSET * (C::MAX_RESOLUTION - $res + 1);
         return ($index >> $digitOffset) & 0x7;
+    }
+
+    public static function cellToString(Cell $cell): string
+    {
+        return self::indexToString($cell->index());
+    }
+
+    public static function indexFromString(string $s): int
+    {
+        $s = str_starts_with(strtolower($s), '0x')
+            ? substr($s, 2)
+            : $s;
+        return intval($s, 16);
+    }
+
+    public static function indexToString(int $i): string
+    {
+        return sprintf('%016x', $i);
+    }
+
+    public static function newLatLng(float $lat, float $lng): LatLng
+    {
+        return LatLng::fromDegrees($lat, $lng);
+    }
+
+    public static function vertexFromString(string $hex): ?Vertex
+    {
+        return Vertex::fromString($hex);
+    }
+
+    public static function directedEdgeFromString(string $hex): ?DirectedEdge
+    {
+        return DirectedEdge::fromString($hex);
     }
 }

@@ -47,7 +47,7 @@ final class DirectedEdge
 
         $index = self::hexToInt($hex);
 
-        if ($index <= 0 || !self::isValid($index)) {
+        if ($index <= 0 || !self::isValidEdge($index)) {
             return null;
         }
 
