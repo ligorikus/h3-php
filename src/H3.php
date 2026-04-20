@@ -2053,4 +2053,133 @@ final class H3
     {
         return DirectedEdge::fromString($hex);
     }
+
+    public static function edgeType(Cell|DirectedEdge $edge): int
+    {
+        $index = $edge->index();
+
+        if (self::isValidDirectedEdge($index)) {
+            $origin = self::getDirectedEdgeOrigin($edge);
+            if ($origin !== null && $origin->isPentagon()) {
+                return C::H3_EDGE_TYPE_PENTAGON;
+            }
+            if ($origin !== null && $origin->baseCellNumber() === 127) {
+                return C::H3_EDGE_TYPE_PENTAGON;
+            }
+        }
+
+        $originCell = ($edge instanceof Cell) ? $edge : self::getDirectedEdgeOrigin($edge);
+        if ($originCell !== null) {
+            $baseCell = $originCell->baseCellNumber();
+            if ($baseCell === 127) {
+                return C::H3_EDGE_TYPE_PENTAGON;
+            }
+        }
+
+        return C::H3_EDGE_TYPE_VALID;
+    }
+
+    public static function hexRange(Cell $origin, int $k): array
+    {
+        if ($k < 0) {
+            return [];
+        }
+
+        $maxSize = 3 * $k * ($k + 1) + 1;
+        $out = array_fill(0, $maxSize, null);
+        $distances = array_fill(0, $maxSize, -1);
+
+        $found = 0;
+        $queue = [$origin];
+        $visited = [$origin->index() => 0];
+        $head = 0;
+
+        $out[$found] = $origin;
+        $distances[$found] = 0;
+        $found++;
+
+        while ($head < count($queue)) {
+            $current = $queue[$head++];
+            $currentDist = $visited[$current->index()] ?? 0;
+
+            if ($currentDist >= $k) {
+                continue;
+            }
+
+            $neighbors = self::gridDiskNeighbors($current);
+            foreach ($neighbors as $neighbor) {
+                $idx = $neighbor->index();
+                if ($idx === 0) {
+                    continue;
+                }
+
+                if (!isset($visited[$idx])) {
+                    $newDist = $currentDist + 1;
+                    $visited[$idx] = $newDist;
+                    $queue[] = $neighbor;
+                    $out[$found] = $neighbor;
+                    $distances[$found] = $newDist;
+                    $found++;
+                }
+            }
+        }
+
+        $result = [];
+        for ($ring = 0; $ring <= $k; $ring++) {
+            $result[$ring] = [];
+        }
+
+        for ($i = 0; $i < $found; $i++) {
+            $ring = $distances[$i];
+            if ($ring >= 0 && $ring <= $k) {
+                $result[$ring][] = $out[$i];
+            }
+        }
+
+        return $result;
+    }
+
+    public static function hexRangeUnsafe(Cell $origin, int $k): array
+    {
+        return self::hexRange($origin, $k);
+    }
+
+    public static function maxPolygonToCellsSize(GeoPolygon $polygon, int $resolution): int
+    {
+        $loop = $polygon->geoLoop->vertices;
+        if (empty($loop)) {
+            return 0;
+        }
+
+        $minLat = 90.0;
+        $maxLat = -90.0;
+        $minLng = 180.0;
+        $maxLng = -180.0;
+
+        foreach ($loop as $v) {
+            $minLat = min($minLat, $v->lat());
+            $maxLat = max($maxLat, $v->lat());
+            $minLng = min($minLng, $v->lng());
+            $maxLng = max($maxLng, $v->lng());
+        }
+
+        $minCell = self::latLngToCell(LatLng::fromDegrees($minLat, $minLng), $resolution);
+        $maxCell = self::latLngToCell(LatLng::fromDegrees($maxLat, $maxLng), $resolution);
+        $centerCell = self::latLngToCell(LatLng::fromDegrees(($minLat + $maxLat) / 2, ($minLng + $maxLng) / 2), $resolution);
+
+        if ($minCell === null || $maxCell === null || $centerCell === null) {
+            return 0;
+        }
+
+        $dist1 = self::gridDistance($centerCell, $minCell) ?? 0;
+        $dist2 = self::gridDistance($centerCell, $maxCell) ?? 0;
+        $maxDist = max($dist1, $dist2);
+
+        return 3 * $maxDist * ($maxDist + 1) + 1;
+    }
+
+    public static function maxPolygonToCellsSizeExperimental(GeoPolygon $polygon, int $resolution, int $mode = C::CONTAINMENT_OVERLAPPING, ?int $maxCells = null): int
+    {
+        return self::maxPolygonToCellsSize($polygon, $resolution);
+    }
 }

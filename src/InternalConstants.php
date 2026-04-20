@@ -19,6 +19,10 @@ final class InternalConstants
     public const H3_EDGE_MODE = 3;
     public const H3_VERTEX_MODE = 4;
 
+    public const H3_EDGE_TYPE_VALID = 0;
+    public const H3_EDGE_TYPE_PENTAGON = 1;
+    public const H3_EDGE_TYPE_KITE = 2;
+
     public const H3_NULL = 0;
     public const MAX_CELL_BNDRY_VERTS = 10;
 

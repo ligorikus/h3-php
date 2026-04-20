@@ -120,4 +120,9 @@ final class Vertex
     {
         return H3::vertexToCell($this);
     }
+
+    public function string(): string
+    {
+        return self::intToHex($this->index);
+    }
 }

@@ -209,4 +209,14 @@ private static function hexToInt(string $hex): int
     {
         return \H3\H3::icosahedronFaces($this);
     }
+
+    public function string(): string
+    {
+        return '0x' . dechex($this->index);
+    }
+
+    public function edgeType(): int
+    {
+        return \H3\H3::edgeType($this);
+    }
 }

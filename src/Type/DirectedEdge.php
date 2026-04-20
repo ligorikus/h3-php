@@ -108,4 +108,14 @@ final class DirectedEdge
     {
         return H3::directedEdgeToBoundary($this);
     }
+
+    public function string(): string
+    {
+        return self::intToHex($this->index);
+    }
+
+    public function edgeType(): int
+    {
+        return \H3\H3::edgeType($this);
+    }
 }
