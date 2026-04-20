@@ -135,9 +135,19 @@ private static function hexToInt(string $hex): int
         return \H3\H3::cellToParent($this, $resolution);
     }
 
+    public function immediateParent(): ?self
+    {
+        return \H3\H3::cellToImmediateParent($this);
+    }
+
     public function children(int $resolution): array
     {
         return \H3\H3::cellToChildren($this, $resolution);
+    }
+
+    public function immediateChildren(): array
+    {
+        return \H3\H3::cellToImmediateChildren($this);
     }
 
     public function centerChild(int $resolution): ?self

@@ -1555,6 +1555,15 @@ final class H3
         return Cell::fromIndex($index);
     }
 
+    public static function cellToImmediateParent(Cell $cell): ?Cell
+    {
+        $res = $cell->resolution();
+        if ($res === 0) {
+            return null;
+        }
+        return self::cellToParent($cell, $res - 1);
+    }
+
     public static function cellToChildren(Cell $cell, int $childRes): array
     {
         $res = $cell->resolution();
@@ -1563,9 +1572,19 @@ final class H3
             return [];
         }
 
-        $cells = self::gridDisk($cell, $childRes - $res);
-        
-        return array_filter($cells, fn(Cell $c) => $c->resolution() === $childRes);
+        if ($childRes === $res) {
+            return [$cell];
+        }
+
+        $cells = [];
+        for ($pos = 0; $pos < 7; $pos++) {
+            $child = self::childPosToCell($pos, $cell, $childRes);
+            if ($child !== null) {
+                $cells[] = $child;
+            }
+        }
+
+        return $cells;
     }
 
     public static function cellToCenterChild(Cell $cell, int $childRes): ?Cell
@@ -1585,6 +1604,15 @@ final class H3
         $index = ($index & ~(0xF << 52)) | ($childRes << 52);
 
         return Cell::fromIndex($index);
+    }
+
+    public static function cellToImmediateChildren(Cell $cell): array
+    {
+        $res = $cell->resolution();
+        if ($res >= self::MAX_RESOLUTION) {
+            return [];
+        }
+        return self::cellToChildren($cell, $res + 1);
     }
 
     public static function childPosToCell(int $position, Cell $cell, int $resolution): ?Cell
