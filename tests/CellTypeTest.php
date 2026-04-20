@@ -8,123 +8,78 @@ use H3\H3;
 use H3\Type\Cell;
 use H3\ValueObject\LatLng;
 use H3\Internal\BaseCells;
+use PHPUnit\Framework\TestCase;
 
-class CellTypeTest
+class CellTypeTest extends TestCase
 {
     private const VALID_CELL = 0x850dab63fffffff;
-    private const PENTAGON_CELL = 0x821c07fffffffff;
 
-    public function testBaseCellNumber(): bool
+    public function testBaseCellNumber(): void
     {
         $cell = Cell::fromIndex(self::VALID_CELL);
         $baseCell = $cell->baseCellNumber();
-        
-        if ($baseCell < 0 || $baseCell >= 122) {
-            echo "FAIL: Base cell {$baseCell} out of range\n";
-            return false;
-        }
-        echo "PASS: testBaseCellNumber\n";
-        return true;
+
+        $this->assertGreaterThanOrEqual(0, $baseCell);
+        $this->assertLessThan(122, $baseCell);
     }
 
-    public function testPentagonBaseCellNumber(): bool
+    public function testPentagonBaseCellNumber(): void
     {
-        // Test known pentagon base cells using IS_PENTAGON constant
         foreach (BaseCells::IS_PENTAGON as $baseCellNum => $_) {
-            $cell = Cell::fromIndex(0x8000000000000000 | ($baseCellNum << 4) | 1);
-            if (!$cell->isPentagon()) {
-                echo "FAIL: Base cell {$baseCellNum} should be pentagon\n";
-                return false;
-            }
+            $index = (1 << 59) | ($baseCellNum << 45) | 1;
+            $cell = Cell::fromIndex($index);
+            $this->assertTrue($cell->isPentagon(), "Base cell {$baseCellNum} should be pentagon");
         }
-        echo "PASS: testPentagonBaseCellNumber\n";
-        return true;
     }
 
-    public function testResolution(): bool
+    public function testResolution(): void
     {
         $cell = Cell::fromIndex(self::VALID_CELL);
-        if ($cell->resolution() !== 5) {
-            echo "FAIL: Expected resolution 5\n";
-            return false;
-        }
+        $this->assertSame(5, $cell->resolution());
 
         $latLng = LatLng::fromDegrees(0, 0);
         $res0Cell = H3::latLngToCell($latLng, 0);
-        if ($res0Cell->resolution() !== 0) {
-            echo "FAIL: Expected resolution 0\n";
-            return false;
-        }
-        echo "PASS: testResolution\n";
-        return true;
+        $this->assertNotNull($res0Cell);
+        $this->assertSame(0, $res0Cell->resolution());
     }
 
-    public function testIsPentagon(): bool
+    public function testIsPentagon(): void
     {
-        $latLng = LatLng::fromDegrees(0, 0);  // Atlantic - pentagon base 58
+        $latLng = LatLng::fromDegrees(0, 0);
         $pentagon = H3::latLngToCell($latLng, 0);
-        
-        $regularLatLng = LatLng::fromDegrees(0, 1);  // Regular cell
+        $this->assertNotNull($pentagon);
+        $this->assertTrue($pentagon->isPentagon(), 'Atlantic should be pentagon');
+
+        $regularLatLng = LatLng::fromDegrees(45, 45);
         $regular = H3::latLngToCell($regularLatLng, 0);
-        
-        if (!$pentagon->isPentagon()) {
-            echo "FAIL: Atlantic should be pentagon\n";
-            return false;
-        }
-        
-        if ($regular->isPentagon()) {
-            echo "FAIL: Base 1 should not be pentagon\n";
-            return false;
-        }
-        
-        echo "PASS: testIsPentagon\n";
-        return true;
+        $this->assertNotNull($regular);
+        $this->assertFalse($regular->isPentagon(), 'Coordinates (45, 45) should not be pentagon');
     }
 
-    public function testIsValid(): bool
+    public function testIsValid(): void
     {
         $validCell = Cell::fromIndex(self::VALID_CELL);
-        if (!Cell::isValidCell($validCell->index())) {
-            echo "FAIL: Valid cell should be valid\n";
-            return false;
-        }
+        $this->assertTrue(Cell::isValidCell($validCell->index()));
 
         $invalidCell = Cell::fromIndex(0);
-        if ($invalidCell->isValid()) {
-            echo "FAIL: Zero should not be valid\n";
-            return false;
-        }
-        echo "PASS: testIsValid\n";
-        return true;
+        $this->assertFalse($invalidCell->isValid());
     }
 
-    public function testFromString(): bool
+    public function testFromString(): void
     {
         $cell = Cell::fromString('850dab63fffffff');
-        if ($cell === null || $cell->index() !== self::VALID_CELL) {
-            echo "FAIL: fromString failed\n";
-            return false;
-        }
+        $this->assertNotNull($cell);
+        $this->assertSame(self::VALID_CELL, $cell->index());
 
         $invalidCell = Cell::fromString('invalid');
-        if ($invalidCell !== null) {
-            echo "FAIL: Invalid string should return null\n";
-            return false;
-        }
-        echo "PASS: testFromString\n";
-        return true;
+        $this->assertNull($invalidCell);
     }
 
-    public function testIndexRounding(): bool
+    public function testIndexRounding(): void
     {
         $original = 0x850dab63fffffff;
         $cell = Cell::fromIndex($original);
-        
-        if ($cell->index() !== $original) {
-            echo "FAIL: Index should round-trip\n";
-            return false;
-        }
-        echo "PASS: testIndexRounding\n";
-        return true;
+
+        $this->assertSame($original, $cell->index());
     }
 }

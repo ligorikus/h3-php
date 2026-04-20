@@ -1,0 +1,14 @@
+parameters:
+    level: 4
+    paths:
+        - src
+        - tests
+    bootstrapFiles:
+        - vendor/autoload.php
+    ignoreErrors:
+        - '#no value type specified in iterable type array#'
+        - '#has no type specified#'
+        - '#Expression on left side of \?\? is not nullable#'
+        - '#Strict comparison using === between.*will always evaluate to false#'
+        - '#Using nullsafe method call on non-nullable type#'
+    reportUnmatchedIgnoredErrors: false

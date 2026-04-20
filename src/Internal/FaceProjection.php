@@ -32,9 +32,162 @@ final class FaceProjection
         [18, 14, 10],  // face 19
     ];
 
+    private const FACE_NEIGHBOR_DATA = [
+        0 => [
+            ['face' => 0, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 4, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 1, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 5, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        1 => [
+            ['face' => 1, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 0, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 2, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 6, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        2 => [
+            ['face' => 2, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 1, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 3, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 7, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        3 => [
+            ['face' => 3, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 2, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 4, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 8, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        4 => [
+            ['face' => 4, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 3, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 0, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 9, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        5 => [
+            ['face' => 5, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 10, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 14, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 0, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        6 => [
+            ['face' => 6, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 11, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 10, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 1, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        7 => [
+            ['face' => 7, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 12, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 11, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 2, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        8 => [
+            ['face' => 8, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 13, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 12, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 3, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        9 => [
+            ['face' => 9, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 14, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 13, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 4, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        10 => [
+            ['face' => 10, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 5, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 6, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 15, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        11 => [
+            ['face' => 11, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 6, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 7, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 16, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        12 => [
+            ['face' => 12, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 7, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 8, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 17, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        13 => [
+            ['face' => 13, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 8, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 9, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 18, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        14 => [
+            ['face' => 14, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 9, 'translate' => [2, 2, 0], 'ccwRot60' => 3],
+            ['face' => 5, 'translate' => [2, 0, 2], 'ccwRot60' => 3],
+            ['face' => 19, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        15 => [
+            ['face' => 15, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 16, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 19, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 10, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        16 => [
+            ['face' => 16, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 17, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 15, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 11, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        17 => [
+            ['face' => 17, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 18, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 16, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 12, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        18 => [
+            ['face' => 18, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 19, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 17, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 13, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+        19 => [
+            ['face' => 19, 'translate' => [0, 0, 0], 'ccwRot60' => 0],
+            ['face' => 15, 'translate' => [2, 0, 2], 'ccwRot60' => 1],
+            ['face' => 18, 'translate' => [2, 2, 0], 'ccwRot60' => 5],
+            ['face' => 14, 'translate' => [0, 2, 2], 'ccwRot60' => 3],
+        ],
+    ];
+
     public static function getAdjacentFaces(int $face): array
     {
         return self::FACE_NEIGHBORS[$face] ?? [];
+    }
+
+    public static function getNeighborData(int $face, int $dir): ?array
+    {
+        if ($dir < 0 || $dir > 3) {
+            return null;
+        }
+        return self::FACE_NEIGHBOR_DATA[$face][$dir] ?? null;
+    }
+
+    public static function getFaceNeighborRotations(int $fromFace, int $toFace): ?int
+    {
+        for ($dir = 0; $dir < 4; $dir++) {
+            $neighbor = self::FACE_NEIGHBOR_DATA[$fromFace][$dir] ?? null;
+            if ($neighbor && $neighbor['face'] === $toFace) {
+                return $neighbor['ccwRot60'];
+            }
+        }
+        return null;
+    }
+
+    public static function getFaceNeighborTranslation(int $fromFace, int $toFace): ?array
+    {
+        for ($dir = 0; $dir < 4; $dir++) {
+            $neighbor = self::FACE_NEIGHBOR_DATA[$fromFace][$dir] ?? null;
+            if ($neighbor && $neighbor['face'] === $toFace) {
+                return $neighbor['translate'];
+            }
+        }
+        return null;
     }
 
     private const FACE_CENTER_POINT = [

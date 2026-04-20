@@ -1229,13 +1229,6 @@ final class H3
             return null;
         }
 
-        $aBase = $a->baseCellNumber();
-        $bBase = $b->baseCellNumber();
-
-        if ($aBase === $bBase && $aRes === 0) {
-            return 0;
-        }
-
         $queue = [[$a, 0]];
         $visited = [$aIdx => true];
         $head = 0;
