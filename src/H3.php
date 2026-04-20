@@ -19,13 +19,21 @@ use H3\ValueObject\CoordIJ;
 
 final class H3
 {
+    /** Maximum H3 resolution (15) */
     public const MAX_RESOLUTION = 15;
+    /** Number of H3 base cells (122) */
     public const NUM_BASE_CELLS = 122;
+    /** Number of icosahedron faces (20) */
     public const NUM_ICOSA_FACES = 20;
+    /** Number of pentagons at res 0 (12) */
     public const NUM_PENTAGONS = 12;
+    /** Invalid H3 index */
     public const INVALID_H3_INDEX = 0;
+    /** Maximum number of cell boundary vertices */
     public const MAX_CELL_BNDRY_VERTS = 10;
+    /** Degrees to radians conversion factor */
     public const DEGS_TO_RADS = 0.01745329251994329576;
+    /** Radians to degrees conversion factor */
     public const RADS_TO_DEGS = 57.29577951308232087679;
 
     private const UNIT_VECS = [
@@ -40,6 +48,13 @@ final class H3
 
     private const PENTAGON_BASES = [4, 14, 24, 38, 49, 58, 63, 72, 83, 97, 107, 117];
 
+    /**
+     * Convert latitude/longitude to H3 cell at specified resolution.
+     *
+     * @param LatLng $latLng Geographic coordinates in radians
+     * @param int $resolution H3 resolution (0-15)
+     * @return Cell|null H3 cell containing the point, or null on error
+     */
     public static function latLngToCell(LatLng $latLng, int $resolution): ?Cell
     {
         if ($resolution < 0 || $resolution > self::MAX_RESOLUTION) {
@@ -143,6 +158,12 @@ final class H3
         ];
     }
 
+    /**
+     * Convert H3 cell to latitude/longitude.
+     *
+     * @param Cell $cell H3 cell
+     * @return LatLng Geographic coordinates in radians
+     */
     public static function cellToLatLng(Cell $cell): LatLng
     {
         $index = $cell->index();
@@ -175,6 +196,12 @@ final class H3
         return self::hex2dToGeo($vec['x'], $vec['y'], $faceIJK['face'], $resolution);
     }
 
+    /**
+     * Get cell boundary coordinates.
+     *
+     * @param Cell $cell H3 cell
+     * @return CellBoundary Cell boundary vertices
+     */
     public static function cellToBoundary(Cell $cell): CellBoundary
     {
         $center = self::cellToLatLng($cell);
@@ -199,6 +226,13 @@ final class H3
         return new CellBoundary($vertices);
     }
 
+    /**
+     * Get cells within grid distance k of origin.
+     *
+     * @param Cell $origin Origin cell
+     * @param int $k Grid distance (k-ring)
+     * @return array Array of cells
+     */
     public static function gridDisk(Cell $origin, int $k): array
     {
         if ($k < 0) {
@@ -232,6 +266,13 @@ final class H3
         return $result;
     }
 
+    /**
+     * Get cells at exactly grid distance k from origin (hollow ring).
+     *
+     * @param Cell $origin Origin cell
+     * @param int $k Grid distance
+     * @return array Array of cells at distance k
+     */
     public static function gridRing(Cell $origin, int $k): array
     {
         if ($k < 0) {
@@ -276,6 +317,13 @@ final class H3
         return $ring;
     }
 
+    /**
+     * Get cells with distances from origin.
+     *
+     * @param Cell $origin Origin cell
+     * @param int $k Grid distance
+     * @return array Array of cell arrays with distances
+     */
     public static function gridDiskDistances(Cell $origin, int $k): array
     {
         if ($k < 0) {
@@ -304,6 +352,13 @@ final class H3
         return $result;
     }
 
+    /**
+     * Get cells with distances (unsafe version).
+     *
+     * @param Cell $origin Origin cell
+     * @param int $k Grid distance
+     * @return array Array of cell arrays
+     */
     public static function gridDiskDistancesUnsafe(Cell $origin, int $k): array
     {
         if ($k < 0) {
@@ -324,6 +379,13 @@ final class H3
         return $result;
     }
 
+    /**
+     * Get cells with distances (safe version).
+     *
+     * @param Cell $origin Origin cell
+     * @param int $k Grid distance
+     * @return array Array of cell arrays
+     */
     public static function gridDiskDistancesSafe(Cell $origin, int $k): array
     {
         if ($k < 0) {
@@ -354,6 +416,13 @@ final class H3
         return $result;
     }
 
+    /**
+     * Get cells for multiple origins.
+     *
+     * @param array $origins Array of origin cells
+     * @param int $k Grid distance
+     * @return array Array of cell arrays
+     */
     public static function gridDisksUnsafe(array $origins, int $k): array
     {
         if (empty($origins)) {
@@ -368,6 +437,13 @@ final class H3
         return $results;
     }
 
+    /**
+     * Get hollow ring (unsafe for pentagons).
+     *
+     * @param Cell $origin Origin cell
+     * @param int $k Grid distance
+     * @return array Array of cells
+     */
     public static function gridRingUnsafe(Cell $origin, int $k): array
     {
         if ($k < 0) {
@@ -403,11 +479,22 @@ final class H3
         return $ring;
     }
 
+    /**
+     * Get number of cells at given resolution.
+     *
+     * @param int $resolution H3 resolution (0-15)
+     * @return int|false Number of cells or false if invalid resolution
+     */
     public static function numCells(int $resolution): int|false
     {
         return MathUtils::numCells($resolution);
     }
 
+    /**
+     * Get all resolution 0 cells.
+     *
+     * @return array Array of 122 base cells
+     */
     public static function res0Cells(): array
     {
         $cells = [];
@@ -418,6 +505,12 @@ final class H3
         return $cells;
     }
 
+    /**
+     * Get all pentagon cells at given resolution.
+     *
+     * @param int $resolution H3 resolution (0-15)
+     * @return array Array of 12 pentagon cells
+     */
     public static function pentagons(int $resolution): array
     {
         return array_map(
@@ -426,41 +519,94 @@ final class H3
         );
     }
 
+    /**
+     * Great circle distance between two points in radians.
+     *
+     * @param LatLng $a First point
+     * @param LatLng $b Second point
+     * @return float Distance in radians
+     */
     public static function greatCircleDistanceRads(LatLng $a, LatLng $b): float
     {
         return MathUtils::greatCircleDistanceRads($a, $b);
     }
 
+    /**
+     * Great circle distance in kilometers.
+     *
+     * @param LatLng $a First point
+     * @param LatLng $b Second point
+     * @return float Distance in km
+     */
     public static function greatCircleDistanceKm(LatLng $a, LatLng $b): float
     {
         return MathUtils::greatCircleDistanceKm($a, $b);
     }
 
+    /**
+     * Great circle distance in meters.
+     *
+     * @param LatLng $a First point
+     * @param LatLng $b Second point
+     * @return float Distance in meters
+     */
     public static function greatCircleDistanceM(LatLng $a, LatLng $b): float
     {
         return MathUtils::greatCircleDistanceM($a, $b);
     }
 
+    /**
+     * Average hexagon area in km².
+     *
+     * @param int $resolution H3 resolution
+     * @return float|false Area in km²
+     */
     public static function hexagonAreaAvgKm2(int $resolution): float|false
     {
         return MathUtils::hexagonAreaAvgKm2($resolution);
     }
 
+    /**
+     * Average hexagon area in m².
+     *
+     * @param int $resolution H3 resolution
+     * @return float|false Area in m²
+     */
     public static function hexagonAreaAvgM2(int $resolution): float|false
     {
         return MathUtils::hexagonAreaAvgM2($resolution);
     }
 
+    /**
+     * Average hexagon edge length in km.
+     *
+     * @param int $resolution H3 resolution
+     * @return float|false Edge length in km
+     */
     public static function hexagonEdgeLengthAvgKm(int $resolution): float|false
     {
         return MathUtils::hexagonEdgeLengthAvgKm($resolution);
     }
 
+    /**
+     * Average hexagon edge length in meters.
+     *
+     * @param int $resolution H3 resolution
+     * @return float|false Edge length in meters
+     */
     public static function hexagonEdgeLengthAvgM(int $resolution): float|false
     {
         return MathUtils::hexagonEdgeLengthAvgM($resolution);
     }
 
+    /**
+     * Create H3 index from components.
+     *
+     * @param int $res Resolution
+     * @param int $baseCell Base cell number
+     * @param int $digit Index digit
+     * @return int H3 index
+     */
     private static function makeIndex(int $res, int $baseCell, int $digit): int
     {
         $index = 0;
@@ -913,6 +1059,13 @@ final class H3
         return self::faceIJKToH3Index($faceIJK, $res);
     }
 
+    /**
+     * Get cells in polygon.
+     *
+     * @param GeoPolygon $polygon Input polygon
+     * @param int $resolution H3 resolution
+     * @return array Array of cells
+     */
     public static function polygonToCells(GeoPolygon $polygon, int $resolution): array
     {
         $outerLoop = $polygon->geoLoop->vertices;
@@ -1130,6 +1283,12 @@ final class H3
         return $inside;
     }
 
+    /**
+     * Convert cells to GeoJSON multipolygon.
+     *
+     * @param array $cells Array of cells
+     * @return array GeoJSON multipolygon
+     */
     public static function cellsToMultiPolygon(array $cells): array
     {
         if (empty($cells)) {
@@ -1205,6 +1364,13 @@ final class H3
         return new GeoPolygon(new GeoLoop($allVertices));
     }
 
+    /**
+     * Check if two cells are neighbors (share an edge).
+     *
+     * @param Cell $a First cell
+     * @param Cell $b Second cell
+     * @return bool True if cells are neighbors
+     */
     public static function areNeighborCells(Cell $a, Cell $b): bool
     {
         $neighbors = self::gridDiskNeighbors($a);
@@ -1217,6 +1383,13 @@ final class H3
         return false;
     }
 
+    /**
+     * Get grid distance between two cells.
+     *
+     * @param Cell $a Origin cell
+     * @param Cell $b Destination cell
+     * @return int|null Distance or null if unreachable
+     */
     public static function gridDistance(Cell $a, Cell $b): ?int
     {
         $aIdx = $a->index();
@@ -1253,6 +1426,13 @@ final class H3
         return null;
     }
 
+    /**
+     * Get grid path between two cells.
+     *
+     * @param Cell $start Start cell
+     * @param Cell $end End cell
+     * @return array Array of cells in path
+     */
     public static function gridPath(Cell $start, Cell $end): array
     {
         $startIdx = $start->index();
@@ -1290,6 +1470,13 @@ final class H3
         return [];
     }
 
+    /**
+     * Convert cell to local IJ coordinates.
+     *
+     * @param Cell $origin Origin cell
+     * @param Cell $cell Target cell
+     * @return CoordIJ|null Local coordinates
+     */
     public static function cellToLocalIJ(Cell $origin, Cell $cell): ?CoordIJ
     {
         $originIdx = $origin->index();
@@ -1357,6 +1544,13 @@ final class H3
         return new CoordIJ($i + $originI, $j + $originJ);
     }
 
+    /**
+     * Convert local IJ coordinates to cell.
+     *
+     * @param Cell $origin Origin cell
+     * @param CoordIJ $ij Local coordinates
+     * @return Cell|null Cell
+     */
     public static function localIJToCell(Cell $origin, CoordIJ $ij): ?Cell
     {
         if (!$origin->isValid()) {
@@ -1388,6 +1582,12 @@ final class H3
         return $mode === 2;
     }
 
+    /**
+     * Check if index is valid.
+     *
+     * @param int $index H3 index
+     * @return bool True if valid
+     */
     public static function isValidIndex(int $index): bool
     {
         if ($index === 0) {
@@ -1421,6 +1621,12 @@ final class H3
         return DirectedEdge::fromIndex($edgeIdx);
     }
 
+    /**
+     * Get cells from directed edge.
+     *
+     * @param Cell|DirectedEdge $edge Directed edge
+     * @return array Array of [origin, destination] cells
+     */
     public static function directedEdgeToCells(Cell|DirectedEdge $edge): array
     {
         if (!self::isValidDirectedEdge($edge->index())) {
@@ -1453,6 +1659,12 @@ final class H3
         return [Cell::fromIndex($originIdx)];
     }
 
+    /**
+     * Get directed edges from cell.
+     *
+     * @param Cell $origin Origin cell
+     * @return array Array of directed edges
+     */
     public static function originToDirectedEdges(Cell $origin): array
     {
         $neighbors = self::gridDiskNeighbors($origin);
