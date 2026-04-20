@@ -3,6 +3,8 @@
     "description": "Pure PHP implementation of H3 geospatial indexing system",
     "type": "library",
     "license": "Apache-2.0",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": "^8.3"
     },
@@ -16,5 +18,16 @@
     },
     "autoload-dev": {
         "H3\\Tests\\": "tests/"
+    },
+    "keywords": [
+        "geospatial",
+        "h3",
+        "indexing",
+        "hexagonal-grid",
+        "uber"
+    ],
+    "support": {
+        "issues": "https://github.com/ligorikus/h3-php/issues",
+        "source": "https://github.com/ligorikus/h3-php"
     }
 }
