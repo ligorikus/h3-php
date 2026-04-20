@@ -1,0 +1,20 @@
+{
+    "name": "h3/php-h3",
+    "description": "Pure PHP implementation of H3 geospatial indexing system",
+    "type": "library",
+    "license": "Apache-2.0",
+    "require": {
+        "php": "^8.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "H3\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "H3\\Tests\\": "tests/"
+    }
+}
