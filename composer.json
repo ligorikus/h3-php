@@ -1,5 +1,5 @@
 {
-    "name": "h3/php-h3",
+    "name": "ligorikus/h3-php",
     "description": "Pure PHP implementation of H3 geospatial indexing system",
     "type": "library",
     "license": "Apache-2.0",
