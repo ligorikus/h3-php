@@ -112,6 +112,22 @@ final class FaceIJKConverter
         ))->normalize();
     }
 
+    private static function upAp7r(CoordIJK $ijk): CoordIJK
+    {
+        $i = $ijk->getI() - $ijk->getK();
+        $j = $ijk->getJ() - $ijk->getK();
+
+        $newI = (int)round(num: floatval(2 * $i + $j) * Constants::M_ONESEVENTH);
+        $newJ = (int)round(num: floatval(3 * $j - $i) * Constants::M_ONESEVENTH);
+        $newK = 0;
+
+        return (new CoordIJK(
+            i: $newI,
+            j: $newJ,
+            k: $newK
+        ))->normalize();
+    }
+
     private static function downAp7(CoordIJK $ijk): CoordIJK
     {
         $iVec = new CoordIJK(3, 0, 1);
@@ -126,21 +142,6 @@ final class FaceIJKConverter
         $ijk = $ijk->add($kVec);
 
         return $ijk->normalize();
-    }
-
-    private static function upAp7r(CoordIJK $ijk): CoordIJK
-    {
-        $i = $ijk->getI() - $ijk->getK();
-        $j = $ijk->getJ() - $ijk->getK();
-
-        $newI = (int)round(num: floatval(2 * $i + $j) * Constants::M_ONESEVENTH);
-        $newJ = (int)round(num: floatval(3 * $j - $i) * Constants::M_ONESEVENTH);
-        $newK = 0;
-        return (new CoordIJK(
-            i: $newI,
-            j: $newJ,
-            k: $newK
-        ))->normalize();
     }
 
     private static function downAp7r(CoordIJK $ijk): CoordIJK
