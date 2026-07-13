@@ -23,12 +23,12 @@ use H3\ValueObject\LatLng;
 use H3\H3;
 use H3\ValueObject\LatLng;
 
-$latLng = new LatLng(55.643309, 37.752010);
+$latLng = new LatLng(37.7749, -122.4194);
 $resolution = 9;
 
 $cell = H3::latLngToCell($latLng, $resolution);
 
-echo "H3 Index: " . dechex($cell) . "\n";
+echo dechex($cell) . "\n"; // 8928342e20fffff
 ```
 
 ## License
