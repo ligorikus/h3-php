@@ -28,7 +28,7 @@ $resolution = 9;
 
 $cell = H3::latLngToCell($latLng, $resolution);
 
-echo dechex($cell) . "\n"; // 8928342e20fffff
+echo dechex($cell) . "\n"; // 89283082803ffff
 ```
 
 ## License
