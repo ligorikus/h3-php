@@ -39,7 +39,7 @@ final readonly class Vec3d
         return new self(
             x: cos($geo->getLng()) * $r,
             y: sin($geo->getLng()) * $r,
-            z: cos($geo->getLat()),
+            z: sin($geo->getLat()),
         );
     }
 

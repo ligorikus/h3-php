@@ -85,19 +85,19 @@ final readonly class Vec2dConverter
         }
 
         if ($v->getX() < 0.0) {
-            if ($j %2 === 0) {
-                $axisi = $j / 2;
-                $diff = (int)($i - $axisi);
-                $i = (int)($i - 2.0 * $diff);
-            } else {
-                $axisi = ($j + 1) / 2;
+            if ($j%2 === 0) {
+                $axisi = (int)($j / 2);
                 $diff = $i - $axisi;
-                $i = (int)($i - (2.0 * $diff + 1));
+                $i = (int)($i - 2 * $diff);
+            } else {
+                $axisi = (int)(($j + 1) / 2);
+                $diff = $i - $axisi;
+                $i = (int)($i - (2 * $diff + 1));
             }
         }
 
         if ($v->getY() < 0.0) {
-            $i = (int)($i - (2 * $j + 1) / 2);
+            $i = $i - (int)((2 * $j + 1) / 2);
             $j = -1 * $j;
         }
 

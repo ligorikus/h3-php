@@ -13,11 +13,11 @@ final readonly class LatLng
 
     public function getLat(): float
     {
-        return $this->lat;
+        return deg2rad($this->lat);
     }
 
     public function getLng(): float
     {
-        return $this->lng;
+        return deg2rad($this->lng);
     }
 }
