@@ -41,12 +41,15 @@ final class FaceIJKConverter
         for ($r = $resolution - 1; $r >= 0; $r--) {
             $lastIjk = $ijk;
             if (Math::isResolutionClassIII($r + 1)) {
+                // rotate ccw
                 $ijk = self::upAp7($ijk);
-                $lastCenter = self::downAp7($ijk);
+                $lastCenter = clone $ijk;
+                $lastCenter = self::downAp7($lastCenter);
             } else {
                 // rotate cw
                 $ijk = self::upAp7r($ijk);
-                $lastCenter = self::downAp7r($ijk);
+                $lastCenter = clone $ijk;
+                $lastCenter = self::downAp7r($lastCenter);
             }
             $diff = $lastIjk->sub($lastCenter);
             $diff = $diff->normalize();
