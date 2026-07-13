@@ -8,8 +8,6 @@ use H3\Converter\FaceIJKConverter;
 use H3\Converter\Vec3dConverter;
 use H3\Exception\H3LatLngDomainException;
 use H3\Exception\H3ResolutionException;
-use H3\ValueObject\FaceIJK;
-use H3\ValueObject\H3Index;
 use H3\ValueObject\LatLng;
 use H3\ValueObject\Vec3d;
 
@@ -20,11 +18,11 @@ final class H3
      * the specified resolution.
      * @param LatLng $latLng The spherical coordinates to encode.
      * @param int $resolution The desired H3 resolution for the encoding.
-     * @return H3Index The encoded H3Index.
+     * @return int The encoded H3Index.
      * @throws H3LatLngDomainException
      * @throws H3ResolutionException
      */
-    public static function latLngToCell(LatLng $latLng, int $resolution): H3Index
+    public static function latLngToCell(LatLng $latLng, int $resolution): int
     {
         if ($resolution < 0 || $resolution > Constants::MAX_H3_RES) {
             throw new H3ResolutionException('Invalid resolution');
@@ -46,11 +44,11 @@ final class H3
      *
      * @param Vec3d $vec3d The 3D cartesian coordinates to encode.
      * @param int $resolution The desired H3 resolution for the encoding.
-     * @return H3Index The encoded H3Index.
+     * @return int The encoded H3Index.
      * @throws H3LatLngDomainException
      * @throws H3ResolutionException
      */
-    public static function vec3ToCell(Vec3d $vec3d, int $resolution): H3Index
+    public static function vec3ToCell(Vec3d $vec3d, int $resolution): int
     {
         if ($resolution < 0 || $resolution > Constants::MAX_H3_RES) {
             throw new H3ResolutionException('Invalid resolution');
@@ -62,7 +60,6 @@ final class H3
 
         $fijk = Vec3dConverter::vec3ToFaceIjk($vec3d, $resolution);
 
-        // TODO
         return FaceIJKConverter::faceIjkToH3Index($fijk, $resolution);
     }
 }

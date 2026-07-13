@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace H3\ValueObject;
 
+use H3\Enum\Direction;
+
 /**
  * IJK hexagon coordinates
  *
@@ -11,6 +13,16 @@ namespace H3\ValueObject;
  */
 final readonly class CoordIJK
 {
+    private const UNIT_VECS  = [
+        [0, 0, 0], // direction 0
+        [0, 0, 1], // direction 1
+        [0, 1, 0], // direction 2
+        [0, 1, 1], // direction 3
+        [1, 0, 0], // direction 4
+        [1, 0, 1], // direction 5
+        [1, 1, 0], // direction 6
+    ];
+
     public function __construct(
         private int $i, ///< i component
         private int $j, ///< j component
@@ -93,5 +105,24 @@ final readonly class CoordIJK
             j: $this->j - $ijk->getJ(),
             k: $this->k - $ijk->getK(),
         );
+    }
+
+    public function toDigit(): int
+    {
+        $c = $this->normalize();
+        $digit = Direction::INVALID_DIGIT;
+        for ($i = 0; $i < 7; $i++) {
+            $unitVec = self::UNIT_VECS[$i];
+            if ($c->matches(new self($unitVec[0], $unitVec[1], $unitVec[2]))) {
+                $digit = $i;
+                break;
+            }
+        }
+        return $digit;
+    }
+
+    public function matches(CoordIJK $c): bool
+    {
+        return ($this->getI() === $c->getI() && $this->getJ() === $c->getJ() && $this->getK() === $c->getK());
     }
 }

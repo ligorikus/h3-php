@@ -28,7 +28,6 @@ final readonly class Vec3dConverter
         $hex2d = self::vec3ToHex2d($vec3d, $resolution);
         $face = $hex2d['face'];
         $v = $hex2d['v'];
-
         $coordIjk = Vec2dConverter::vec2dToCoordIJK($v);
 
         return new FaceIJK($face, $coordIjk);

@@ -24,4 +24,5 @@ final readonly class Constants
 
     public const H3_INIT = 35184372088831;
     public const M_ONESEVENTH = 0.14285714285714285714285714285714285;
+    public const NUM_BASE_CELLS = 122;
 }

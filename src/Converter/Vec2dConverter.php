@@ -87,7 +87,7 @@ final readonly class Vec2dConverter
         if ($v->getX() < 0.0) {
             if ($j %2 === 0) {
                 $axisi = $j / 2;
-                $diff = $i - $axisi;
+                $diff = (int)($i - $axisi);
                 $i = (int)($i - 2.0 * $diff);
             } else {
                 $axisi = ($j + 1) / 2;
@@ -97,7 +97,7 @@ final readonly class Vec2dConverter
         }
 
         if ($v->getY() < 0.0) {
-            $i = $i - (2 * $j + 1) / 2;
+            $i = (int)($i - (2 * $j + 1) / 2);
             $j = -1 * $j;
         }
 

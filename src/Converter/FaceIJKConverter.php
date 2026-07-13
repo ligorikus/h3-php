@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace H3\Converter;
 
 use H3\Constants;
+use H3\Enum\Direction;
+use H3\FaceProjection;
 use H3\H3IndexMode;
 use H3\H3Modification;
 use H3\Helper\Math;
@@ -26,11 +28,10 @@ final class FaceIJKConverter
             if ($fijk->getCoord()->getI() > self::MAX_FACE_COORD
                 || $fijk->getCoord()->getJ() > self::MAX_FACE_COORD
                 || $fijk->getCoord()->getK() > self::MAX_FACE_COORD) {
-                // TODO throw
+                return 0;
             }
 
-            // TODO H3_SET_BASE_CELL
-            return $h;
+            return H3Modification::h3SetBaseCell($h, $fijk->getBaseCell()['baseCell']);
         }
 
         // we need to find the correct base cell FaceIJK for this H3 index;
@@ -50,10 +51,44 @@ final class FaceIJKConverter
                 $ijk = self::downAp7($ijk);
             } else {
                 // rotate cw
-                // TODO upAp7r
+                $ijk = self::upAp7r($ijk);
+                $lastCenter = $ijk;
+                $ijk = self::downAp7r($ijk);
             }
-            // TODO $diff
+            $diff = $ijk->sub($lastCenter);
+            $diff = $diff->normalize();
+            $h = H3Modification::h3SetIndexDigit($h, $r+1, $diff->toDigit());
         }
+
+        if (
+            $fijk->getCoord()->getI() > self::MAX_FACE_COORD
+            || $fijk->getCoord()->getJ() > self::MAX_FACE_COORD
+            || $fijk->getCoord()->getK() > self::MAX_FACE_COORD
+        ) {
+            return 0;
+        }
+
+        $h = H3Modification::h3SetBaseCell($h, $fijk->getBaseCell()['baseCell']);
+
+        // rotate if necessary to get canonical base cell orientation
+        // for this base cell
+        $numRots = $fijk->getBaseCell()['ccwRot60'];
+        if (self::isBaseCellPentagon($fijk->getBaseCell()['baseCell'])) {
+            // force rotation out of missing k-axes sub-sequence
+            if (H3Modification::h3LeadingNonZeroDigit($h) === Direction::K_AXES_DIGIT) {
+                // check for a cw/ccw offset face; default is ccw
+                if (self::baseCellIsCwOffset($fijk->getBaseCell()['baseCell'], $fijk->getFace())) {
+                    $h = H3Modification::h3Rotate60cw($h);
+                } else {
+                    $h = H3Modification::h3Rotate60ccw($h);
+                }
+            }
+        } else {
+            for ($i = 0; $i < $numRots; $i++) {
+                $h = H3Modification::h3Rotate60ccw($h);
+            }
+        }
+        return $h;
     }
 
     /**
@@ -68,8 +103,8 @@ final class FaceIJKConverter
         $i = $ijk->getI() - $ijk->getK();
         $j = $ijk->getJ() - $ijk->getK();
 
-        $newI = (int)round(num: (2 * $i + $j) * Constants::M_ONESEVENTH);
-        $newJ = (int)round(num: (3 * $j - $i) * Constants::M_ONESEVENTH);
+        $newI = (int)round(num: floatval(3 * $i - $j) * Constants::M_ONESEVENTH); // TODO may be exception
+        $newJ = (int)round(num: floatval($i + 2 * $j) * Constants::M_ONESEVENTH); // TODO may be exception
         $newK = 0;
         return (new CoordIJK(
             i: $newI,
@@ -93,4 +128,50 @@ final class FaceIJKConverter
 
         return $ijk->normalize();
     }
+
+    private static function upAp7r(CoordIJK $ijk): CoordIJK
+    {
+        $i = $ijk->getI() - $ijk->getK();
+        $j = $ijk->getJ() - $ijk->getK();
+
+        $newI = (int)round(num: floatval(2 * $i - $j) * Constants::M_ONESEVENTH); // TODO may be exception
+        $newJ = (int)round(num: floatval(3 * $j - $i) * Constants::M_ONESEVENTH); // TODO may be exception
+        $newK = 0;
+        return (new CoordIJK(
+            i: $newI,
+            j: $newJ,
+            k: $newK
+        ))->normalize();
+    }
+
+    private static function downAp7r(CoordIJK $ijk): CoordIJK
+    {
+        $iVec = new CoordIJK(3, 1, 0);
+        $jVec = new CoordIJK(0, 3, 1);
+        $kVec = new CoordIJK(1, 0, 3);
+
+        $iVec = $iVec->scale($ijk->getI());
+        $jVec = $jVec->scale($ijk->getJ());
+        $kVec = $kVec->scale($ijk->getK());
+
+        $ijk = $iVec->add($jVec);
+        $ijk = $ijk->add($kVec);
+
+        return $ijk->normalize();
+    }
+    private static function isBaseCellPentagon(int $baseCell): bool
+    {
+        if ($baseCell < 0 || $baseCell > Constants::NUM_BASE_CELLS) {
+            return false;
+        }
+
+        return (bool)FaceProjection::BASE_CELL_DATA[$baseCell][1];
+    }
+
+    private static function baseCellIsCwOffset(int $baseCell, int $testFace): bool
+    {
+        return FaceProjection::BASE_CELL_DATA[$baseCell][2][0] === $testFace
+            || FaceProjection::BASE_CELL_DATA[$baseCell][2][1] === $testFace;
+    }
+
 }
