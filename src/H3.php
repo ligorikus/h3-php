@@ -24,6 +24,7 @@ final class H3
      */
     public static function latLngToCell(LatLng $latLng, int $resolution): int
     {
+        echo "<pre>";
         if ($resolution < 0 || $resolution > Constants::MAX_H3_RES) {
             throw new H3ResolutionException('Invalid resolution');
         }

@@ -34,11 +34,6 @@ final class FaceIJKConverter
             return H3Modification::h3SetBaseCell($h, $fijk->getBaseCell()['baseCell']);
         }
 
-        // we need to find the correct base cell FaceIJK for this H3 index;
-        // start with the passed in face and resolution res ijk coordinates
-        // in that face's coordinate system
-        $fijkBC = clone $fijk;
-
         // build the H3Index from finest res up
         // adjust r for the fact that the res 0 base cell offsets the indexing
         // digits
@@ -47,37 +42,40 @@ final class FaceIJKConverter
             $lastIjk = $ijk;
             if (Math::isResolutionClassIII($r + 1)) {
                 $ijk = self::upAp7($ijk);
-                $lastCenter = $ijk;
-                $ijk = self::downAp7($ijk);
+                $lastCenter = self::downAp7($ijk);
             } else {
                 // rotate cw
                 $ijk = self::upAp7r($ijk);
-                $lastCenter = $ijk;
-                $ijk = self::downAp7r($ijk);
+                $lastCenter = self::downAp7r($ijk);
             }
-            $diff = $ijk->sub($lastCenter);
+            $diff = $lastIjk->sub($lastCenter);
             $diff = $diff->normalize();
             $h = H3Modification::h3SetIndexDigit($h, $r+1, $diff->toDigit());
         }
 
+        // we need to find the correct base cell FaceIJK for this H3 index;
+        // start with the passed in face and resolution res ijk coordinates
+        // in that face's coordinate system
+        $fijkBC = new FaceIJK($fijk->getFace(), $ijk);
+
         if (
-            $fijk->getCoord()->getI() > self::MAX_FACE_COORD
-            || $fijk->getCoord()->getJ() > self::MAX_FACE_COORD
-            || $fijk->getCoord()->getK() > self::MAX_FACE_COORD
+            $fijkBC->getCoord()->getI() > self::MAX_FACE_COORD
+            || $fijkBC->getCoord()->getJ() > self::MAX_FACE_COORD
+            || $fijkBC->getCoord()->getK() > self::MAX_FACE_COORD
         ) {
             return 0;
         }
 
-        $h = H3Modification::h3SetBaseCell($h, $fijk->getBaseCell()['baseCell']);
+        $h = H3Modification::h3SetBaseCell($h, $fijkBC->getBaseCell()['baseCell']);
 
         // rotate if necessary to get canonical base cell orientation
         // for this base cell
-        $numRots = $fijk->getBaseCell()['ccwRot60'];
-        if (self::isBaseCellPentagon($fijk->getBaseCell()['baseCell'])) {
+        $numRots = $fijkBC->getBaseCell()['ccwRot60'];
+        if (self::isBaseCellPentagon($fijkBC->getBaseCell()['baseCell'])) {
             // force rotation out of missing k-axes sub-sequence
             if (H3Modification::h3LeadingNonZeroDigit($h) === Direction::K_AXES_DIGIT) {
                 // check for a cw/ccw offset face; default is ccw
-                if (self::baseCellIsCwOffset($fijk->getBaseCell()['baseCell'], $fijk->getFace())) {
+                if (self::baseCellIsCwOffset($fijkBC->getBaseCell()['baseCell'], $fijkBC->getFace())) {
                     $h = H3Modification::h3Rotate60cw($h);
                 } else {
                     $h = H3Modification::h3Rotate60ccw($h);
@@ -103,8 +101,9 @@ final class FaceIJKConverter
         $i = $ijk->getI() - $ijk->getK();
         $j = $ijk->getJ() - $ijk->getK();
 
-        $newI = (int)round(num: floatval(3 * $i - $j) * Constants::M_ONESEVENTH); // TODO may be exception
-        $newJ = (int)round(num: floatval($i + 2 * $j) * Constants::M_ONESEVENTH); // TODO may be exception
+        $newI = (int)round(num: floatval(3 * $i - $j) * Constants::M_ONESEVENTH);
+        $newJ = (int)round(num: floatval($i + 2 * $j) * Constants::M_ONESEVENTH);
+
         $newK = 0;
         return (new CoordIJK(
             i: $newI,
@@ -134,8 +133,8 @@ final class FaceIJKConverter
         $i = $ijk->getI() - $ijk->getK();
         $j = $ijk->getJ() - $ijk->getK();
 
-        $newI = (int)round(num: floatval(2 * $i - $j) * Constants::M_ONESEVENTH); // TODO may be exception
-        $newJ = (int)round(num: floatval(3 * $j - $i) * Constants::M_ONESEVENTH); // TODO may be exception
+        $newI = (int)round(num: floatval(2 * $i + $j) * Constants::M_ONESEVENTH);
+        $newJ = (int)round(num: floatval(3 * $j - $i) * Constants::M_ONESEVENTH);
         $newK = 0;
         return (new CoordIJK(
             i: $newI,
