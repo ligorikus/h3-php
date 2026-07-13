@@ -70,7 +70,7 @@ final readonly class CoordIJK
 
         $min = $i;
         if ($j < $min) $min = $j;
-        if ($k < $min) $k = $j;
+        if ($k < $min) $min = $k;
         if ($min > 0) {
             $i -= $min;
             $j -= $min;
