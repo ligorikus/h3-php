@@ -1,14 +1,31 @@
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+
 parameters:
-    level: 4
+    level: max
     paths:
         - src
         - tests
     bootstrapFiles:
         - vendor/autoload.php
-    ignoreErrors:
-        - '#no value type specified in iterable type array#'
-        - '#has no type specified#'
-        - '#Expression on left side of \?\? is not nullable#'
-        - '#Strict comparison using === between.*will always evaluate to false#'
-        - '#Using nullsafe method call on non-nullable type#'
-    reportUnmatchedIgnoredErrors: false
+    checkUninitializedProperties: true
+    checkBenevolentUnionTypes: true
+    checkMissingCallableSignature: true
+    checkMissingVarTagTypehint: true
+    checkTooWideParameterOutInProtectedAndPublicMethods: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkTooWideThrowTypesInProtectedAndPublicMethods: true
+    reportPossiblyNonexistentGeneralArrayOffset: true
+    reportPossiblyNonexistentConstantArrayOffset: true
+    reportAlwaysTrueInLastCondition: true
+    reportAnyTypeWideningInVarTag: true
+    reportUnsafeArrayStringKeyCasting: prevent
+    rememberPossiblyImpureFunctionValues: false
+    reportIgnoresWithoutComments: true
+    reportUnmatchedIgnoredErrors: true
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideImplicitThrowType: true
+            throwTypeCovariance: true

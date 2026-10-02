@@ -1,21 +1,33 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="3"
+    errorLevel="1"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-    findUnusedBaselineEntry="false"
-    findUnusedCode="false"
+    reportMixedIssues="true"
+    strictBinaryOperands="true"
+    allowBoolToLiteralBoolComparison="false"
+    sealAllMethods="true"
+    sealAllProperties="true"
+    ensureArrayIntOffsetsExist="true"
+    ensureArrayStringOffsetsExist="true"
+    disallowLiteralKeysOnUnshapedArrays="true"
+    checkForThrowsDocblock="true"
+    checkForThrowsInGlobalScope="true"
+    findUnusedBaselineEntry="true"
+    findUnusedCode="true"
+    findUnusedVariablesAndParams="true"
+    findUnusedPsalmSuppress="true"
+    findUnusedIssueHandlerSuppression="true"
+    restrictReturnTypes="true"
+    rememberPropertyAssignmentsAfterCall="false"
 >
     <projectFiles>
         <directory name="src" />
+        <directory name="tests" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
-    <issueHandlers>
-        <PossiblyUnusedMethod errorLevel="suppress" />
-        <UnusedClass errorLevel="suppress" />
-    </issueHandlers>
 </psalm>
