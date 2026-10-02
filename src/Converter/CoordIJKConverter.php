@@ -18,8 +18,8 @@ final readonly class CoordIJKConverter
      */
     public static function coordIJKToVec2d(CoordIJK $coordIJK): Vec2d
     {
-        $i = $coordIJK->getI() - $coordIJK->getK();
-        $j = $coordIJK->getJ() - $coordIJK->getK();
+        $i = (float) ($coordIJK->getI() - $coordIJK->getK());
+        $j = (float) ($coordIJK->getJ() - $coordIJK->getK());
 
         return new Vec2d(
             x: $i - 0.5 * $j,

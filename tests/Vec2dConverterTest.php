@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace H3\Tests;
 
 use H3\Converter\Vec2dConverter;
+use H3\Exception\H3DomainException;
 use H3\ValueObject\Vec2d;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -37,5 +38,23 @@ final class Vec2dConverterTest extends TestCase
         yield 'negative x with odd j' => [-0.5, $sin60, 0, 1, 0];
         yield 'negative y' => [0.5, -$sin60, 1, 0, 1];
         yield 'negative x and y' => [-1.0, -2.0 * $sin60, 0, 0, 2];
+    }
+
+    /** @throws H3DomainException */
+    #[DataProvider('invalidFaces')]
+    public function testRejectsInvalidFace(int $face, float $x): void
+    {
+        $this->expectException(H3DomainException::class);
+
+        Vec2dConverter::hex2dToVec3(new Vec2d($x, 0.0), $face, 0, 0);
+    }
+
+    /** @return iterable<string, array{int, float}> */
+    public static function invalidFaces(): iterable
+    {
+        yield 'negative face at center' => [-1, 0.0];
+        yield 'negative face away from center' => [-1, 1.0];
+        yield 'face above maximum at center' => [20, 0.0];
+        yield 'face above maximum away from center' => [20, 1.0];
     }
 }

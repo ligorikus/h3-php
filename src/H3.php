@@ -13,6 +13,10 @@ use H3\Exception\H3ResolutionException;
 use H3\ValueObject\LatLng;
 use H3\ValueObject\Vec3d;
 
+/**
+ * Public entry point for library consumers.
+ * @psalm-api
+ */
 final class H3
 {
     /**
@@ -46,6 +50,8 @@ final class H3
      * @param int $h3 The H3 index
      * @return LatLng The spherical coordinates of the H3 cell center
      * @throws H3IndexInvalidException
+     * @throws H3DomainException
+     * @throws H3ResolutionException
      */
     public static function cellToLatLng(int $h3): LatLng
     {

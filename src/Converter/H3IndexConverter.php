@@ -6,7 +6,9 @@ namespace H3\Converter;
 
 use H3\Constants;
 use H3\Enum\Overage;
+use H3\Exception\H3DomainException;
 use H3\Exception\H3IndexInvalidException;
+use H3\Exception\H3ResolutionException;
 use H3\FaceProjection;
 use H3\H3Modification;
 use H3\Helper\BaseCell;
@@ -23,6 +25,8 @@ final class H3IndexConverter
      * @param int $h3 The H3 index
      * @return Vec3d The 3D cartesian coordinates of the H3 cell center
      * @throws H3IndexInvalidException
+     * @throws H3DomainException
+     * @throws H3ResolutionException
      */
     public static function h3IndexToVec3d(int $h3): Vec3d
     {
@@ -38,6 +42,8 @@ final class H3IndexConverter
      * @param int $h3 The H3Index
      * @return FaceIJK The corresponding FaceIJK address
      * @throws H3IndexInvalidException
+     * @throws H3DomainException
+     * @throws H3ResolutionException
      */
     public static function h3ToFaceIjk(int $h3): FaceIJK
     {
