@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace H3\Tests;
 
+use H3\Converter\Vec3dConverter;
 use H3\H3;
 use H3\Exception\H3DomainException;
 use H3\Exception\H3LatLngDomainException;
@@ -43,7 +44,7 @@ final class H3Test extends TestCase
     {
         $vector = Vec3d::fromLatLng(new LatLng(37.7749, -122.4194));
 
-        self::assertSame('89283082803ffff', dechex(H3::vec3ToCell($vector, 9)));
+        self::assertSame('89283082803ffff', dechex(Vec3dConverter::vec3ToCell($vector, 9)));
     }
 
     /**
@@ -69,7 +70,7 @@ final class H3Test extends TestCase
     {
         $this->expectException(H3ResolutionException::class);
 
-        H3::vec3ToCell(new Vec3d(1.0, 0.0, 0.0), $resolution);
+        Vec3dConverter::vec3ToCell(new Vec3d(1.0, 0.0, 0.0), $resolution);
     }
 
     /** @return iterable<string, array{int}> */
@@ -111,7 +112,7 @@ final class H3Test extends TestCase
     {
         $this->expectException(H3LatLngDomainException::class);
 
-        H3::vec3ToCell(new Vec3d($x, $y, $z), 9);
+        Vec3dConverter::vec3ToCell(new Vec3d($x, $y, $z), 9);
     }
 
     /** @return iterable<string, array{float, float, float}> */

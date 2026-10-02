@@ -64,7 +64,7 @@ final readonly class Math
 
         // project p2 onto tangent plane at p1
         $p2Proj = self::vec3LinComb(1.0, $p2, -self::vec3Dot($p2, $p1), $p1);
-        $p2Proj = self::vec3Normalize($p2Proj);
+        $p2Proj = $p2Proj->normalize();
 
         return atan2(
             self::vec3Dot($p2Proj, $eastDir),
@@ -88,7 +88,7 @@ final readonly class Math
     {
         $northPole = new Vec3d(0.0, 0.0, 1.0);
         $north = self::vec3LinComb(1.0, $northPole, -self::vec3Dot($northPole, $p), $p);
-        $north = self::vec3Normalize($north);
+        $north = $north->normalize();
         $east = self::vec3Cross($north, $p);
 
         return [
@@ -100,21 +100,6 @@ final readonly class Math
     public static function vec3Norm(Vec3d $v): float
     {
         return sqrt(self::vec3NormSq($v));
-    }
-
-    public static function vec3Normalize(Vec3d $v): Vec3d
-    {
-        $norm = self::vec3Norm($v);
-        $s = 0.0;
-        if ($norm > 0.0) {
-            $s = 1.0 / $norm;
-        }
-
-        return new Vec3d(
-            x: $v->getX() * $s,
-            y: $v->getY() * $s,
-            z: $v->getZ() * $s,
-        );
     }
 
     public static function vec3Cross(Vec3d $v1, Vec3d $v2): Vec3d

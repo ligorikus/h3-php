@@ -7,16 +7,16 @@ namespace H3\ValueObject;
 final readonly class LatLng
 {
     public function __construct(
-        private float $lat,
-        private float $lng
+        public float $lat,
+        public float $lng
     ) {}
 
-    public function getLat(): float
+    public function getLatRadians(): float
     {
         return deg2rad($this->lat);
     }
 
-    public function getLng(): float
+    public function getLngRadians(): float
     {
         return deg2rad($this->lng);
     }

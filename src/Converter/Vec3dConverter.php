@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace H3\Converter;
 
 use H3\Constants;
+use H3\Exception\H3DomainException;
+use H3\Exception\H3LatLngDomainException;
+use H3\Exception\H3ResolutionException;
 use H3\FaceProjection;
 use H3\Helper\Math;
 use H3\ValueObject\FaceIJK;
+use H3\ValueObject\LatLng;
 use H3\ValueObject\Vec2d;
 use H3\ValueObject\Vec3d;
 
@@ -130,5 +134,45 @@ final readonly class Vec3dConverter
             'face' => $face,
             'sqd' => $sqd,
         ];
+    }
+
+    /**
+     * Encodes a coordinate on the sphere to the H3 index of the containing cell at
+     * the specified resolution.
+     *
+     * Vec3d $vec3d is expected to be on the unit sphere.
+     *
+     * @param Vec3d $vec3d The 3D cartesian coordinates to encode.
+     * @param int $resolution The desired H3 resolution for the encoding.
+     * @return int The encoded H3Index.
+     * @throws H3LatLngDomainException
+     * @throws H3ResolutionException
+     * @throws H3DomainException
+     */
+    public static function vec3ToCell(Vec3d $vec3d, int $resolution): int
+    {
+        if ($resolution < 0 || $resolution > Constants::MAX_H3_RES) {
+            throw new H3ResolutionException('Invalid resolution');
+        }
+
+        if (!is_finite($vec3d->getX()) || !is_finite($vec3d->getY()) || !is_finite($vec3d->getZ())) {
+            throw new H3LatLngDomainException('Invalid x/y/z');
+        }
+
+        $fijk = self::vec3ToFaceIjk($vec3d, $resolution);
+
+        return FaceIJKConverter::faceIjkToH3Index($fijk, $resolution);
+    }
+
+    /**
+     * @param Vec3d $vec3d
+     * @return LatLng
+     */
+    public static function vec3ToLatLng(Vec3d $vec3d): LatLng
+    {
+        return new LatLng(
+            lat: rad2deg(asin($vec3d->getZ())),
+            lng: rad2deg(atan2($vec3d->getY(), $vec3d->getX())),
+        );
     }
 }

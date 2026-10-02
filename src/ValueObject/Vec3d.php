@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace H3\ValueObject;
 
+use H3\Helper\Math;
+
 final readonly class Vec3d
 {
     public function __construct(
@@ -34,12 +36,12 @@ final readonly class Vec3d
      */
     public static function fromLatLng(LatLng $geo): self
     {
-        $r = cos($geo->getLat());
+        $r = cos($geo->getLatRadians());
 
         return new self(
-            x: cos($geo->getLng()) * $r,
-            y: sin($geo->getLng()) * $r,
-            z: sin($geo->getLat()),
+            x: cos($geo->getLngRadians()) * $r,
+            y: sin($geo->getLngRadians()) * $r,
+            z: sin($geo->getLatRadians()),
         );
     }
 
@@ -53,6 +55,21 @@ final readonly class Vec3d
             x: $arr[0],
             y: $arr[1],
             z: $arr[2],
+        );
+    }
+
+    public function normalize(): self
+    {
+        $norm = Math::vec3Norm($this);
+        $s = 0.0;
+        if ($norm > 0.0) {
+            $s = 1.0 / $norm;
+        }
+
+        return new Vec3d(
+            x: $this->getX() * $s,
+            y: $this->getY() * $s,
+            z: $this->getZ() * $s,
         );
     }
 }

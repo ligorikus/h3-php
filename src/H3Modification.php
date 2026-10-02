@@ -30,9 +30,30 @@ final class H3Modification
         return ($h3 & self::H3_RES_MASK_NEGATIVE) | ($resolution << self::H3_RES_OFFSET);
     }
 
+    /**
+     * Gets the integer base cell of h3
+     * @param int $h3
+     * @return int
+     */
+    public static function h3GetBaseCell(int $h3): int
+    {
+        return ($h3 & self::H3_BC_MASK) >> self::H3_BC_OFFSET;
+    }
+
+    /**
+     * Sets the integer base cell of h3 to bc
+     * @param int $h3
+     * @param int $bc
+     * @return int
+     */
     public static function h3SetBaseCell(int $h3, int $bc): int
     {
         return ($h3 & self::H3_BC_MASK_NEGATIVE) | ($bc << self::H3_BC_OFFSET);
+    }
+
+    public static function h3GetIndexDigit(int $h3, int $resolution): int
+    {
+        return ($h3 >> ((Constants::MAX_H3_RES - $resolution) * self::H3_PER_DIGIT_OFFSET)) & self::H3_DIGIT_MASK;
     }
 
     public static function h3SetIndexDigit(int $h3, int $resolution, int $digit): int
@@ -43,14 +64,14 @@ final class H3Modification
         );
     }
 
+    /**
+     * Gets the integer resolution of h3
+     * @param int $h3
+     * @return int
+     */
     public static function h3GetResolution(int $h3): int
     {
         return ($h3 & self::H3_RES_MASK) >> self::H3_RES_OFFSET;
-    }
-
-    public static function h3GetIndexDigit(int $h3, int $resolution): int
-    {
-        return ($h3 >> ((Constants::MAX_H3_RES - $resolution) * self::H3_PER_DIGIT_OFFSET)) & self::H3_DIGIT_MASK;
     }
 
     public static function h3Rotate60cw(int $h3): int
