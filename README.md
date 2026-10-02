@@ -12,6 +12,11 @@ composer require ligorikus/h3-php
 
 - PHP 8.2+
 
+## Development Approach
+
+The library's implementation is developed without large language models (LLMs).
+LLMs are used only for documentation and writing tests.
+
 ## Development
 
 Use PHP 8.2.27 or newer to run the development tools. Composer resolves the
