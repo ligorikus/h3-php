@@ -9,6 +9,7 @@ use H3\Enum\Direction;
 use H3\Enum\FaceNeighbors;
 use H3\Enum\Overage;
 use H3\Exception\H3DomainException;
+use H3\Exception\H3ResolutionException;
 use H3\FaceProjection;
 use H3\H3IndexMode;
 use H3\H3Modification;
@@ -295,6 +296,7 @@ final class FaceIJKConverter
      * @param FaceIJK $fijk
      * @param int $resolution
      * @return Vec3d
+     * @throws H3DomainException
      */
     public static function faceIjkToVec3d(FaceIJK $fijk, int $resolution): Vec3d
     {
@@ -323,6 +325,8 @@ final class FaceIJKConverter
      * @return array{fijk: FaceIJK, overage: Overage} overage 0 if on original face (no overage);
      *          1 if on face edge (only occurs on substrate grids);
      *          2 if overage on new face interior
+     * @throws H3DomainException
+     * @throws H3ResolutionException
  */
     public static function adjustOverageClassII(
         FaceIJK $fijk,
@@ -330,9 +334,19 @@ final class FaceIJKConverter
         bool $pentLeading4,
         int $substrate,
     ): array {
+        $maxDim = self::MAX_DIM_BY_C_I_I_RES[$resolution] ?? null;
+        $unitScale = self::UNIT_SCALE_BY_C_I_I_RES[$resolution] ?? null;
+        if ($maxDim === null || $unitScale === null || $maxDim < 0 || $unitScale < 0) {
+            throw new H3ResolutionException('Invalid Class II resolution');
+        }
+
+        $faceNeighbors = self::FACE_NEIGHBORS[$fijk->getFace()] ?? null;
+        if ($faceNeighbors === null) {
+            throw new H3DomainException('Invalid icosahedral face');
+        }
+
         $overage = Overage::NO_OVERAGE;
         $ijk = $fijk->getCoord();
-        $maxDim = self::MAX_DIM_BY_C_I_I_RES[$resolution];
         // get the maximum dimension value; scale if a substrate grid
         if ($substrate === 1) {
             $maxDim *= 3;
@@ -345,14 +359,14 @@ final class FaceIJKConverter
             $overage = Overage::NEW_FACE;
             if ($ijk->getK() > 0) {
                 if ($ijk->getJ() > 0) { // jk "quadrant"
-                    $faceNeighbor = self::FACE_NEIGHBORS[$fijk->getFace()][FaceNeighbors::JK->value];
+                    $faceNeighbor = $faceNeighbors[FaceNeighbors::JK->value];
                     $fijkOrient = new FaceOrientIJK(
                         $faceNeighbor[0],
                         CoordIJK::fromArray($faceNeighbor[1]),
                         $faceNeighbor[2],
                     );
                 } else { // ik "quadrant"
-                    $faceNeighbor = self::FACE_NEIGHBORS[$fijk->getFace()][FaceNeighbors::KI->value];
+                    $faceNeighbor = $faceNeighbors[FaceNeighbors::KI->value];
                     $fijkOrient = new FaceOrientIJK(
                         $faceNeighbor[0],
                         CoordIJK::fromArray($faceNeighbor[1]),
@@ -371,7 +385,7 @@ final class FaceIJKConverter
                     }
                 }
             } else { // ij "quadrant"
-                $faceNeighbor = self::FACE_NEIGHBORS[$fijk->getFace()][FaceNeighbors::IJ->value];
+                $faceNeighbor = $faceNeighbors[FaceNeighbors::IJ->value];
                 $fijkOrient = new FaceOrientIJK(
                     $faceNeighbor[0],
                     CoordIJK::fromArray($faceNeighbor[1]),
@@ -390,7 +404,6 @@ final class FaceIJKConverter
             }
 
             $transVec = $fijkOrient->translate;
-            $unitScale = self::UNIT_SCALE_BY_C_I_I_RES[$resolution];
             if ($substrate === 1) {
                 $unitScale *= 3;
             }

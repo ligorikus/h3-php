@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace H3\Converter;
 
 use H3\Constants;
+use H3\Exception\H3DomainException;
 use H3\FaceProjection;
 use H3\Helper\Math;
 use H3\ValueObject\CoordIJK;
@@ -106,17 +107,24 @@ final readonly class Vec2dConverter
         return $cijk->normalize();
     }
 
+    /** @throws H3DomainException */
     public static function hex2dToVec3(
         Vec2d $v,
         int $face,
         int $res,
         int $substrate,
     ): Vec3d {
+        $faceCenter = FaceProjection::FACE_CENTER_POINT[$face] ?? null;
+        $faceAxes = FaceProjection::FACE_AXES_AZ_RADS_CII[$face] ?? null;
+        if ($faceCenter === null || $faceAxes === null) {
+            throw new H3DomainException('Invalid icosahedral face');
+        }
+
         // calculate (r, theta) in hex2d
         $r = $v->mag();
 
         if ($r < Constants::EPSILON) {
-            return Vec3d::fromArray(FaceProjection::FACE_CENTER_POINT[$face]);
+            return Vec3d::fromArray($faceCenter);
         }
 
         $theta = atan2($v->y, $v->x);
@@ -132,7 +140,7 @@ final readonly class Vec2dConverter
             // Never occurs because every case where this function is called with
             // substrate=1, the res has been adjusted by _faceIjkPentToVerts, which
             // adjusts the res by +1, making it no longer Class III.
-            if (Math::isResolutionClassIII($res)) {
+            if (Math::isResolutionClassIII($res) === 1) {
                 $r *= Constants::M_RSQRT7;
             }
         }
@@ -148,10 +156,10 @@ final readonly class Vec2dConverter
         }
 
         // find theta as an azimuth
-        $theta = Math::posAngleRads(FaceProjection::FACE_AXES_AZ_RADS_CII[$face][0] - $theta);
+        $theta = Math::posAngleRads($faceAxes[0] - $theta);
 
         // now find the point at (r,theta) from the face center
-        $tangentBasis = Math::vec3TangentBasis(Vec3d::fromArray(FaceProjection::FACE_CENTER_POINT[$face]));
+        $tangentBasis = Math::vec3TangentBasis(Vec3d::fromArray($faceCenter));
         $northDir = $tangentBasis['northDir'];
         $eastDir = $tangentBasis['eastDir'];
         $dir = Math::vec3LinComb(
@@ -162,7 +170,7 @@ final readonly class Vec2dConverter
         );
         $vec3d = Math::vec3LinComb(
             cos($r),
-            Vec3d::fromArray(FaceProjection::FACE_CENTER_POINT[$face]),
+            Vec3d::fromArray($faceCenter),
             sin($r),
             $dir,
         );
