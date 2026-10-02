@@ -41,7 +41,7 @@ final readonly class Vec3dConverter
      *
      * @param Vec3d $vec3d The Vec3d coordinates to encode.
      * @param int $resolution The desired H3 resolution for the encoding.
-     * @return array{face: int, v: Vec2d}
+     * @return array{face: int<0, 19>, v: Vec2d}
      *
      * face Output: The icosahedral face containing the coordinates.
      * v Output: The 2D hex coordinates of the cell containing the point.
@@ -74,7 +74,7 @@ final readonly class Vec3dConverter
         );
 
         // adjust theta for Class III (odd resolutions)
-        if (Math::isResolutionClassIII($resolution)) {
+        if (Math::isResolutionClassIII($resolution) === 1) {
             $theta = Math::posAngleRads($theta - Constants::M_AP7_ROT_RADS);
         }
 
@@ -105,7 +105,7 @@ final readonly class Vec3dConverter
      * Vec3d v is expected to be on the unit sphere.
      *
      * @param Vec3d $v The Vec3d coordinates to encode.
-     * @return array{face: int, sqd: float}
+     * @return array{face: int<0, 19>, sqd: float}
      *
      * face Output: The icosahedral face containing the coordinates.
      * sqd Output: The squared euclidean distance to its face center.

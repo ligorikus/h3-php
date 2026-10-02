@@ -48,7 +48,7 @@ final class H3Modification
         return ($h3 & self::H3_RES_MASK) >> self::H3_RES_OFFSET;
     }
 
-    public static function h3GetIndexDigit(int $h3, $resolution): int
+    public static function h3GetIndexDigit(int $h3, int $resolution): int
     {
         return ($h3 >> ((Constants::MAX_H3_RES - $resolution) * self::H3_PER_DIGIT_OFFSET)) & self::H3_DIGIT_MASK;
     }
@@ -78,8 +78,9 @@ final class H3Modification
     public static function h3LeadingNonZeroDigit(int $h3): int
     {
         for ($r = 1; $r <= self::h3GetResolution($h3); $r++) {
-            if (self::h3GetIndexDigit($h3, $r)) {
-                return self::h3GetIndexDigit($h3, $r);
+            $digit = self::h3GetIndexDigit($h3, $r);
+            if ($digit !== Direction::CENTER_DIGIT) {
+                return $digit;
             }
         }
         return Direction::CENTER_DIGIT;

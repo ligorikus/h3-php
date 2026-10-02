@@ -5,15 +5,27 @@ declare(strict_types=1);
 namespace H3\Tests;
 
 use H3\H3;
+use H3\Exception\H3DomainException;
 use H3\Exception\H3LatLngDomainException;
 use H3\Exception\H3ResolutionException;
 use H3\ValueObject\LatLng;
 use H3\ValueObject\Vec3d;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Entry point discovered and invoked by PHPUnit.
+ * @psalm-api
+ */
 final class H3Test extends TestCase
 {
+    /**
+     * @throws H3DomainException
+     * @throws H3LatLngDomainException
+     * @throws H3ResolutionException
+     * @throws ExpectationFailedException
+     */
     public function testEncodesKnownCell(): void
     {
         $cell = H3::latLngToCell(new LatLng(37.7749, -122.4194), 9);
@@ -21,6 +33,12 @@ final class H3Test extends TestCase
         self::assertSame('89283082803ffff', dechex($cell));
     }
 
+    /**
+     * @throws H3DomainException
+     * @throws H3LatLngDomainException
+     * @throws H3ResolutionException
+     * @throws ExpectationFailedException
+     */
     public function testEncodesKnownCellFromVector(): void
     {
         $vector = Vec3d::fromLatLng(new LatLng(37.7749, -122.4194));
@@ -28,6 +46,11 @@ final class H3Test extends TestCase
         self::assertSame('89283082803ffff', dechex(H3::vec3ToCell($vector, 9)));
     }
 
+    /**
+     * @throws H3DomainException
+     * @throws H3LatLngDomainException
+     * @throws H3ResolutionException
+     */
     #[DataProvider('invalidResolutions')]
     public function testRejectsInvalidResolution(int $resolution): void
     {
@@ -36,6 +59,11 @@ final class H3Test extends TestCase
         H3::latLngToCell(new LatLng(37.7749, -122.4194), $resolution);
     }
 
+    /**
+     * @throws H3DomainException
+     * @throws H3LatLngDomainException
+     * @throws H3ResolutionException
+     */
     #[DataProvider('invalidResolutions')]
     public function testRejectsInvalidVectorResolution(int $resolution): void
     {
@@ -51,6 +79,11 @@ final class H3Test extends TestCase
         yield 'above maximum' => [16];
     }
 
+    /**
+     * @throws H3DomainException
+     * @throws H3LatLngDomainException
+     * @throws H3ResolutionException
+     */
     #[DataProvider('invalidCoordinates')]
     public function testRejectsNonFiniteCoordinates(float $lat, float $lng): void
     {
@@ -68,6 +101,11 @@ final class H3Test extends TestCase
         yield 'NaN longitude' => [0.0, NAN];
     }
 
+    /**
+     * @throws H3DomainException
+     * @throws H3LatLngDomainException
+     * @throws H3ResolutionException
+     */
     #[DataProvider('invalidVectors')]
     public function testRejectsNonFiniteVector(float $x, float $y, float $z): void
     {

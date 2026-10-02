@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace H3\Enum;
 
-class Direction
+final class Direction
 {
     public const CENTER_DIGIT = 0;
     public const K_AXES_DIGIT = 1;

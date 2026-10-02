@@ -6,6 +6,7 @@ namespace H3;
 
 use H3\Converter\FaceIJKConverter;
 use H3\Converter\Vec3dConverter;
+use H3\Exception\H3DomainException;
 use H3\Exception\H3LatLngDomainException;
 use H3\Exception\H3ResolutionException;
 use H3\ValueObject\LatLng;
@@ -21,6 +22,7 @@ final class H3
      * @return int The encoded H3Index.
      * @throws H3LatLngDomainException
      * @throws H3ResolutionException
+     * @throws H3DomainException
      */
     public static function latLngToCell(LatLng $latLng, int $resolution): int
     {
@@ -47,6 +49,7 @@ final class H3
      * @return int The encoded H3Index.
      * @throws H3LatLngDomainException
      * @throws H3ResolutionException
+     * @throws H3DomainException
      */
     public static function vec3ToCell(Vec3d $vec3d, int $resolution): int
     {

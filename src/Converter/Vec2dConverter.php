@@ -19,8 +19,6 @@ final readonly class Vec2dConverter
     public static function vec2dToCoordIJK(Vec2d $v): CoordIJK
     {
         // quantize into the ij system and then normalize
-        $i = 0;
-        $j = 0;
         $k = 0;
 
         // first do a reverse conversion
@@ -86,18 +84,18 @@ final readonly class Vec2dConverter
 
         if ($v->getX() < 0.0) {
             if ($j%2 === 0) {
-                $axisi = (int)($j / 2);
+                $axisi = intdiv($j, 2);
                 $diff = $i - $axisi;
-                $i = (int)($i - 2 * $diff);
+                $i = $i - 2 * $diff;
             } else {
-                $axisi = (int)(($j + 1) / 2);
+                $axisi = intdiv($j + 1, 2);
                 $diff = $i - $axisi;
-                $i = (int)($i - (2 * $diff + 1));
+                $i = $i - (2 * $diff + 1);
             }
         }
 
         if ($v->getY() < 0.0) {
-            $i = $i - (int)((2 * $j + 1) / 2);
+            $i = $i - intdiv(2 * $j + 1, 2);
             $j = -1 * $j;
         }
 

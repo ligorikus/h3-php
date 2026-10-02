@@ -6,6 +6,7 @@ namespace H3\Converter;
 
 use H3\Constants;
 use H3\Enum\Direction;
+use H3\Exception\H3DomainException;
 use H3\FaceProjection;
 use H3\H3IndexMode;
 use H3\H3Modification;
@@ -17,6 +18,7 @@ final class FaceIJKConverter
 {
     private const MAX_FACE_COORD = 2;
 
+    /** @throws H3DomainException */
     public static function faceIjkToH3Index(FaceIJK $fijk, int $resolution): int
     {
         // initialize the index
@@ -24,7 +26,7 @@ final class FaceIJKConverter
         $h = H3Modification::h3Mode($h, H3IndexMode::H3_CELL_MODE);
         $h = H3Modification::h3Resolution($h , $resolution);
 
-        if ($resolution == 0) {
+        if ($resolution === 0) {
             if ($fijk->getCoord()->getI() > self::MAX_FACE_COORD
                 || $fijk->getCoord()->getJ() > self::MAX_FACE_COORD
                 || $fijk->getCoord()->getK() > self::MAX_FACE_COORD) {
@@ -40,7 +42,7 @@ final class FaceIJKConverter
         $ijk = $fijk->getCoord();
         for ($r = $resolution - 1; $r >= 0; $r--) {
             $lastIjk = $ijk;
-            if (Math::isResolutionClassIII($r + 1)) {
+            if (Math::isResolutionClassIII($r + 1) === 1) {
                 // rotate ccw
                 $ijk = self::upAp7($ijk);
                 $lastCenter = clone $ijk;
@@ -164,17 +166,21 @@ final class FaceIJKConverter
     }
     private static function isBaseCellPentagon(int $baseCell): bool
     {
-        if ($baseCell < 0 || $baseCell > Constants::NUM_BASE_CELLS) {
+        if ($baseCell < 0 || $baseCell >= Constants::NUM_BASE_CELLS) {
             return false;
         }
 
-        return (bool)FaceProjection::BASE_CELL_DATA[$baseCell][1];
+        return FaceProjection::BASE_CELL_DATA[$baseCell][1] === 1;
     }
 
     private static function baseCellIsCwOffset(int $baseCell, int $testFace): bool
     {
-        return FaceProjection::BASE_CELL_DATA[$baseCell][2][0] === $testFace
-            || FaceProjection::BASE_CELL_DATA[$baseCell][2][1] === $testFace;
+        $data = FaceProjection::BASE_CELL_DATA[$baseCell] ?? null;
+        if ($data === null) {
+            return false;
+        }
+
+        return $data[2][0] === $testFace || $data[2][1] === $testFace;
     }
 
 }
