@@ -14,6 +14,7 @@ final class Direction
     public const IK_AXES_DIGIT = self::I_AXES_DIGIT | self::K_AXES_DIGIT;
     public const IJ_AXES_DIGIT = self::I_AXES_DIGIT | self::J_AXES_DIGIT;
     public const INVALID_DIGIT = 7;
+    public const NUM_DIGITS = self::INVALID_DIGIT;
     public const PENTAGON_SKIPPED_DIGIT = self::K_AXES_DIGIT;
 
     public static function rotate60ccw(int $digit): int

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace H3\ValueObject;
 
+use H3\Constants;
 use H3\Enum\Direction;
 
 /**
@@ -28,6 +29,15 @@ final readonly class CoordIJK
         private int $j, ///< j component
         private int $k, ///< k component
     ) {}
+
+    /**
+     * @param array{int, int, int} $array
+     * @return self
+     */
+    public static function fromArray(array $array): self
+    {
+        return new self($array[0], $array[1], $array[2]);
+    }
 
     public function getI(): int
     {
@@ -124,5 +134,131 @@ final readonly class CoordIJK
     public function matches(CoordIJK $c): bool
     {
         return ($this->getI() === $c->getI() && $this->getJ() === $c->getJ() && $this->getK() === $c->getK());
+    }
+
+    /**
+     * Find the normalized ijk coordinates of the indexing parent of a cell in a
+     * counter-clockwise aperture 7 grid. Works in place.
+     *
+     * @return self
+     */
+    public function upAp7(): self
+    {
+        $i = $this->getI() - $this->getK();
+        $j = $this->getJ() - $this->getK();
+
+        $newI = (int)round(num: floatval(3 * $i - $j) * Constants::M_ONESEVENTH);
+        $newJ = (int)round(num: floatval($i + 2 * $j) * Constants::M_ONESEVENTH);
+
+        $newK = 0;
+        return (new CoordIJK(
+            i: $newI,
+            j: $newJ,
+            k: $newK
+        ))->normalize();
+    }
+
+    public function upAp7r(): self
+    {
+        $i = $this->getI() - $this->getK();
+        $j = $this->getJ() - $this->getK();
+
+        $newI = (int)round(num: floatval(2 * $i + $j) * Constants::M_ONESEVENTH);
+        $newJ = (int)round(num: floatval(3 * $j - $i) * Constants::M_ONESEVENTH);
+        $newK = 0;
+
+        return (new CoordIJK(
+            i: $newI,
+            j: $newJ,
+            k: $newK
+        ))->normalize();
+    }
+
+    public function downAp7(): self
+    {
+        $iVec = new CoordIJK(3, 0, 1);
+        $jVec = new CoordIJK(1, 3, 0);
+        $kVec = new CoordIJK(0, 1, 3);
+
+        $iVec = $iVec->scale($this->getI());
+        $jVec = $jVec->scale($this->getJ());
+        $kVec = $kVec->scale($this->getK());
+
+        $ijk = $iVec->add($jVec);
+        $ijk = $ijk->add($kVec);
+
+        return $ijk->normalize();
+    }
+
+    public function downAp7r(): self
+    {
+        $iVec = new CoordIJK(3, 1, 0);
+        $jVec = new CoordIJK(0, 3, 1);
+        $kVec = new CoordIJK(1, 0, 3);
+
+        $iVec = $iVec->scale($this->getI());
+        $jVec = $jVec->scale($this->getJ());
+        $kVec = $kVec->scale($this->getK());
+
+        $ijk = $iVec->add($jVec);
+        $ijk = $ijk->add($kVec);
+
+        return $ijk->normalize();
+    }
+
+    public function neighbor(int $digit): self
+    {
+        $ijk = $this;
+        if ($digit > Direction::CENTER_DIGIT && $digit < Direction::NUM_DIGITS) {
+            $ijk = $ijk->add(
+                self::fromArray(self::UNIT_VECS[$digit])
+            );
+            $ijk = $ijk->normalize();
+        }
+        return $ijk;
+    }
+
+    /**
+     * Rotates ijk coordinates 60 degrees counter-clockwise. Works in place
+     *
+     * @return self
+     */
+    public function rotate60ccw(): self
+    {
+        // unit vector rotations
+        $iVec = new CoordIJK(1, 1, 0);
+        $jVec = new CoordIJK(0, 1, 1);
+        $kVec = new CoordIJK(1, 0, 1);
+
+        $iVec = $iVec->scale($this->getI());
+        $jVec = $jVec->scale($this->getJ());
+        $kVec = $kVec->scale($this->getK());
+
+        $ijk = $iVec->add($jVec);
+        $ijk = $ijk->add($kVec);
+
+        return $ijk->normalize();
+    }
+
+    /**
+     * Rotates ijk coordinates 60 degrees clockwise. Works in place
+     *
+     * @return self
+     */
+    public function rotate60cw(): self
+    {
+        // unit vector rotations
+        $iVec = new CoordIJK(1, 0, 1);
+        $jVec = new CoordIJK(1, 1, 0);
+        $kVec = new CoordIJK(0, 1, 1);
+
+        $iVec = $iVec->scale($this->getI());
+        $jVec = $jVec->scale($this->getJ());
+        $kVec = $kVec->scale($this->getK());
+
+        $ijk = $iVec->add($jVec);
+        $ijk = $ijk->add($kVec);
+
+        return $ijk->normalize();
     }
 }
