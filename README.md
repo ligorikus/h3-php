@@ -57,7 +57,7 @@ echo dechex($cell) . "\n"; // 89283082803ffff
 
 $center = H3::cellToLatLng($cell);
 
-printf("Latitude: %.6f, Longitude: %.6f\n", $center->getLat(), $center->getLng());
+printf("Latitude: %.6f, Longitude: %.6f\n", $center->lat, $center->lng);
 // Latitude: 37.773515, Longitude: -122.418271
 ```
 
