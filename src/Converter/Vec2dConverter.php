@@ -35,8 +35,8 @@ final readonly class Vec2dConverter
         $m2 = (int)$x2;
 
         // otherwise round correctly
-        $r1 = $x1 - $m1;
-        $r2 = $x2 - $m2;
+        $r1 = $x1 - (float) $m1;
+        $r2 = $x2 - (float) $m2;
 
         if ($r1 < 0.5) {
             if ($r1 < 1.0 / 3.0) {

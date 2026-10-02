@@ -3,13 +3,11 @@
     "description": "Pure PHP implementation of H3 geospatial indexing system",
     "type": "library",
     "license": "Apache-2.0",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "require": {
         "php": "^8.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^11.0",
+        "phpunit/phpunit": "^11.0 || ^12.0 || ^13.0",
         "phpstan/phpstan": "^2.1",
         "vimeo/psalm": "^6.16"
     },
@@ -19,7 +17,17 @@
         }
     },
     "autoload-dev": {
-        "H3\\Tests\\": "tests/"
+        "psr-4": {
+            "H3\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.27"
+        }
+    },
+    "scripts": {
+        "test": "phpunit --fail-on-empty-test-suite"
     },
     "keywords": [
         "geospatial",

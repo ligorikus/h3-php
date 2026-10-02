@@ -115,9 +115,9 @@ final readonly class Vec3dConverter
         $face = 0;
         $sqd = 5.0;
 
-        for ($f = 0; $f < Constants::NUM_ICOSA_FACES; ++$f) {
+        foreach (FaceProjection::FACE_CENTER_POINT as $f => $center) {
             $sqdT = Math::vec3DistSq(
-                v1: Vec3d::fromArray(FaceProjection::FACE_CENTER_POINT[$f]),
+                v1: Vec3d::fromArray($center),
                 v2: $v,
             );
             if ($sqdT < $sqd) {

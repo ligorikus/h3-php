@@ -8,11 +8,21 @@ on:
 
 jobs:
   test:
+    name: PHP ${{ matrix.php-version }} / PHPUnit ${{ matrix.phpunit-version }}
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        php-version: ['8.2', '8.3', '8.4']
+        php-version: ['8.2', '8.3', '8.4', '8.5']
+        phpunit-version: ['11', '12', '13']
+        exclude:
+          - php-version: '8.2'
+            phpunit-version: '12'
+          - php-version: '8.2'
+            phpunit-version: '13'
+          - php-version: '8.3'
+            phpunit-version: '13'
 
     steps:
       - uses: actions/checkout@v4
@@ -21,16 +31,51 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          extensions: dom, mbstring, xml, xmlwriter
+          tools: composer:v2
           coverage: none
 
-      - name: Validate composer.json
-        run: composer validate --strict
+      - name: Resolve dependencies for the actual PHP version
+        run: composer config --unset platform.php
 
       - name: Install dependencies
-        run: composer install --no-interaction
+        run: composer update --with "phpunit/phpunit:^${{ matrix.phpunit-version }}.0" --no-interaction --prefer-dist
+
+      - name: Check platform requirements
+        run: composer check-platform-reqs
 
       - name: Run PHPUnit
-        run: ./vendor/bin/phpunit
+        run: composer test
+
+  quality:
+    name: Locked dependencies and static analysis (PHP 8.2)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: dom, mbstring, xml, xmlwriter
+          tools: composer:v2
+          coverage: none
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Install locked dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Check platform requirements
+        run: composer check-platform-reqs
+
+      - name: Audit dependencies
+        run: composer audit
+
+      - name: Run PHPUnit with locked dependencies
+        run: composer test
 
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyse --memory-limit=256M

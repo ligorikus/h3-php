@@ -44,7 +44,7 @@ final readonly class Vec3d
     }
 
     /**
-     * @param int[] $arr
+     * @param array{int|float, int|float, int|float} $arr
      * @return self
      */
     public static function fromArray(array $arr): self

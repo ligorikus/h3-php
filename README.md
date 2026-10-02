@@ -12,6 +12,29 @@ composer require ligorikus/h3-php
 
 - PHP 8.2+
 
+## Development
+
+Use PHP 8.2.27 or newer to run the development tools. Composer resolves the
+locked dependencies against PHP 8.2.27 so they also install on PHP 8.2.
+
+```bash
+composer install
+composer test
+```
+
+CI checks the following compatible combinations:
+
+| PHP | PHPUnit |
+| --- | --- |
+| 8.2 | 11 |
+| 8.3 | 11, 12 |
+| 8.4 | 11, 12, 13 |
+| 8.5 | 11, 12, 13 |
+
+The matrix resolves dependencies for each actual PHP version. A separate PHP 8.2
+job validates and installs `composer.lock`, audits dependencies, runs tests,
+PHPStan, and Psalm.
+
 ## Quick Start
 
 ```php
