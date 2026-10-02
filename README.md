@@ -54,6 +54,160 @@ $cell = H3::latLngToCell($latLng, $resolution);
 echo dechex($cell) . "\n"; // 89283082803ffff
 ```
 
+## API implementation status
+
+Functions are grouped and ordered as in the [official H3 4.x API reference](https://h3geo.org/docs/api/indexing/),
+including experimental functions and C memory-management helpers.
+
+🟢 Implemented · 🔴 Not implemented
+
+Status refers to the API exposed by `H3\H3`. Low-level helpers such as
+`H3Modification::h3GetResolution()` and `H3Modification::h3GetIndexDigit()`
+are available internally but do not expose the corresponding official API methods.
+
+<details>
+<summary>Indexing</summary>
+
+[Official documentation](https://h3geo.org/docs/api/indexing/)
+
+- 🟢 `latLngToCell`
+- 🔴 `cellToLatLng`
+- 🔴 `cellToBoundary`
+
+</details>
+
+<details>
+<summary>Inspection</summary>
+
+[Official documentation](https://h3geo.org/docs/api/inspection/)
+
+- 🔴 `getResolution`
+- 🔴 `getBaseCellNumber`
+- 🔴 `getIndexDigit`
+- 🔴 `constructCell`
+- 🔴 `stringToH3`
+- 🔴 `h3ToString`
+- 🔴 `isValidCell`
+- 🔴 `isValidIndex`
+- 🔴 `isResClassIII`
+- 🔴 `isPentagon`
+- 🔴 `getIcosahedronFaces`
+- 🔴 `maxFaceCount`
+
+</details>
+
+<details>
+<summary>Traversal</summary>
+
+[Official documentation](https://h3geo.org/docs/api/traversal/)
+
+- 🔴 `gridDistance`
+- 🔴 `gridRing`
+- 🔴 `gridRingUnsafe`
+- 🔴 `maxGridRingSize`
+- 🔴 `gridDisk`
+- 🔴 `maxGridDiskSize`
+- 🔴 `gridDiskDistances`
+- 🔴 `gridDiskUnsafe`
+- 🔴 `gridDiskDistancesUnsafe`
+- 🔴 `gridDiskDistancesSafe`
+- 🔴 `gridDisksUnsafe`
+- 🔴 `gridPathCells`
+- 🔴 `gridPathCellsSize`
+- 🔴 `cellToLocalIj`
+- 🔴 `localIjToCell`
+
+</details>
+
+<details>
+<summary>Hierarchy</summary>
+
+[Official documentation](https://h3geo.org/docs/api/hierarchy/)
+
+- 🔴 `cellToParent`
+- 🔴 `cellToChildren`
+- 🔴 `cellToChildrenSize`
+- 🔴 `cellToCenterChild`
+- 🔴 `cellToChildPos`
+- 🔴 `childPosToCell`
+- 🔴 `compactCells`
+- 🔴 `uncompactCells`
+- 🔴 `uncompactCellsSize`
+
+</details>
+
+<details>
+<summary>Regions</summary>
+
+[Official documentation](https://h3geo.org/docs/api/regions/)
+
+- 🔴 `polygonToCells`
+- 🔴 `maxPolygonToCellsSize`
+- 🔴 `polygonToCellsExperimental`
+- 🔴 `maxPolygonToCellsSizeExperimental`
+- 🔴 `cellsToLinkedMultiPolygon` / `cellsToMultiPolygon`
+- 🔴 `destroyLinkedMultiPolygon`
+
+</details>
+
+<details>
+<summary>Directed edges</summary>
+
+[Official documentation](https://h3geo.org/docs/api/uniedge/)
+
+- 🔴 `areNeighborCells`
+- 🔴 `cellsToDirectedEdge`
+- 🔴 `isValidDirectedEdge`
+- 🔴 `getDirectedEdgeOrigin`
+- 🔴 `getDirectedEdgeDestination`
+- 🔴 `directedEdgeToCells`
+- 🔴 `originToDirectedEdges`
+- 🔴 `directedEdgeToBoundary`
+- 🔴 `reverseDirectedEdge`
+
+</details>
+
+<details>
+<summary>Vertexes</summary>
+
+[Official documentation](https://h3geo.org/docs/api/vertex/)
+
+- 🔴 `cellToVertex`
+- 🔴 `cellToVertexes`
+- 🔴 `vertexToLatLng`
+- 🔴 `isValidVertex`
+
+</details>
+
+<details>
+<summary>Miscellaneous</summary>
+
+[Official documentation](https://h3geo.org/docs/api/misc/)
+
+- 🔴 `degsToRads`
+- 🔴 `radsToDegs`
+- 🔴 `getHexagonAreaAvgKm2`
+- 🔴 `getHexagonAreaAvgM2`
+- 🔴 `cellAreaRads2`
+- 🔴 `cellAreaKm2`
+- 🔴 `cellAreaM2`
+- 🔴 `getHexagonEdgeLengthAvgKm`
+- 🔴 `getHexagonEdgeLengthAvgM`
+- 🔴 `edgeLengthKm`
+- 🔴 `edgeLengthM`
+- 🔴 `edgeLengthRads`
+- 🔴 `getNumCells`
+- 🔴 `getRes0Cells`
+- 🔴 `res0CellCount`
+- 🔴 `getPentagons`
+- 🔴 `pentagonCount`
+- 🔴 `greatCircleDistanceKm`
+- 🔴 `greatCircleDistanceM`
+- 🔴 `greatCircleDistanceRads`
+- 🔴 `describeH3Error`
+
+</details>
+
 ## License
 
 Apache License 2.0 - see [LICENSE](LICENSE)
