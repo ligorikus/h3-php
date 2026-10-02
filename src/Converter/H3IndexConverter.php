@@ -153,7 +153,10 @@ final class H3IndexConverter
         }
 
         return [
-            'fijk' => $fijk,
+            'fijk' => new FaceIJK(
+                face: $fijk->getFace(),
+                coord: $ijk,
+            ),
             'possibleOverage' => $possibleOverage,
         ];
     }

@@ -171,8 +171,8 @@ final readonly class Vec3dConverter
     public static function vec3ToLatLng(Vec3d $vec3d): LatLng
     {
         return new LatLng(
-            lat: asin($vec3d->getZ()),
-            lng: atan2($vec3d->getY(), $vec3d->getX()),
+            lat: rad2deg(asin($vec3d->getZ())),
+            lng: rad2deg(atan2($vec3d->getY(), $vec3d->getX())),
         );
     }
 }

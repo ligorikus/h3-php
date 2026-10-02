@@ -48,16 +48,24 @@ PHPStan, and Psalm.
 use H3\H3;
 use H3\ValueObject\LatLng;
 
-use H3\H3;
-use H3\ValueObject\LatLng;
-
 $latLng = new LatLng(37.7749, -122.4194);
 $resolution = 9;
 
 $cell = H3::latLngToCell($latLng, $resolution);
 
 echo dechex($cell) . "\n"; // 89283082803ffff
+
+$center = H3::cellToLatLng($cell);
+
+printf("Latitude: %.6f, Longitude: %.6f\n", $center->getLat(), $center->getLng());
+// Latitude: 37.773515, Longitude: -122.418271
 ```
+
+`H3::cellToLatLng(int $h3): LatLng` returns the center of an H3 cell as a
+`LatLng` object. `getLat()` and `getLng()` return coordinates in degrees.
+The cell center may differ from the coordinates originally passed to `latLngToCell`.
+H3 indexes are passed as integers; use `hexdec('89283082803ffff')` to convert a
+hexadecimal H3 index string before calling `cellToLatLng`.
 
 ## API implementation status
 
@@ -76,7 +84,7 @@ are available internally but do not expose the corresponding official API method
 [Official documentation](https://h3geo.org/docs/api/indexing/)
 
 - 🟢 `latLngToCell`
-- 🔴 `cellToLatLng`
+- 🟢 `cellToLatLng`
 - 🔴 `cellToBoundary`
 
 </details>
