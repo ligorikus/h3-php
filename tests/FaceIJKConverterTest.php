@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace H3\Tests;
 
-use H3\Converter\FaceIJKConverter;
-use H3\Enum\Overage;
 use H3\Exception\H3DomainException;
 use H3\Exception\H3ResolutionException;
-use H3\ValueObject\CoordIJK;
-use H3\ValueObject\FaceIJK;
+use H3\Internal\Converter\FaceIJKConverter;
+use H3\Internal\Enum\Overage;
+use H3\Internal\ValueObject\CoordIJK;
+use H3\Internal\ValueObject\FaceIJK;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;

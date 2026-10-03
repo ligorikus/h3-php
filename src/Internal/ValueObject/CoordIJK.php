@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace H3\ValueObject;
+namespace H3\Internal\ValueObject;
 
-use H3\Constants;
-use H3\Enum\Direction;
+use H3\Internal\Constants;
+use H3\Internal\Enum\Direction;
 
 /**
  * IJK hexagon coordinates

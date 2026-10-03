@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace H3\ValueObject;
+namespace H3\Internal\ValueObject;
 
-use H3\Helper\Math;
+use H3\Internal\Helper\Math;
+use H3\Type\LatLng;
 
 final readonly class Vec3d
 {

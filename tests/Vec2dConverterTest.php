@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace H3\Tests;
 
-use H3\Converter\Vec2dConverter;
 use H3\Exception\H3DomainException;
-use H3\ValueObject\Vec2d;
+use H3\Internal\Converter\Vec2dConverter;
+use H3\Internal\ValueObject\Vec2d;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
