@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace H3\Converter;
+namespace H3\Internal\Converter;
 
-use H3\Constants;
-use H3\Enum\Overage;
 use H3\Exception\H3DomainException;
 use H3\Exception\H3IndexInvalidException;
 use H3\Exception\H3ResolutionException;
-use H3\FaceProjection;
-use H3\H3Modification;
-use H3\Helper\BaseCell;
-use H3\Helper\Math;
-use H3\ValueObject\CoordIJK;
-use H3\ValueObject\FaceIJK;
-use H3\ValueObject\Vec3d;
+use H3\Internal\Constants;
+use H3\Internal\Enum\Overage;
+use H3\Internal\FaceProjection;
+use H3\Internal\H3Modification;
+use H3\Internal\Helper\BaseCell;
+use H3\Internal\Helper\Math;
+use H3\Internal\ValueObject\CoordIJK;
+use H3\Internal\ValueObject\FaceIJK;
+use H3\Internal\ValueObject\Vec3d;
 
 final class H3IndexConverter
 {

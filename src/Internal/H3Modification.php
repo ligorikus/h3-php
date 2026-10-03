@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace H3;
+namespace H3\Internal;
 
-use H3\Enum\Direction;
+use H3\Internal\Enum\Direction;
+use H3\Internal\Enum\H3IndexMode;
 
 final class H3Modification
 {
