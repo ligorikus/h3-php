@@ -46,7 +46,7 @@ PHPStan, and Psalm.
 <?php
 
 use H3\H3;
-use H3\ValueObject\LatLng;
+use H3\Type\LatLng;
 
 $latLng = new LatLng(37.7749, -122.4194);
 $resolution = 9;
@@ -158,7 +158,8 @@ are available internally but do not expose the corresponding official API method
 - 🔴 `maxPolygonToCellsSize`
 - 🔴 `polygonToCellsExperimental`
 - 🔴 `maxPolygonToCellsSizeExperimental`
-- 🔴 `cellsToLinkedMultiPolygon` / `cellsToMultiPolygon`
+- 🔴 `cellsToLinkedMultiPolygon`
+- 🔴 `cellsToMultiPolygon`
 - 🔴 `destroyLinkedMultiPolygon`
 
 </details>

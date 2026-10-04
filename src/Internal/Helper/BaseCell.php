@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace H3\Helper;
+namespace H3\Internal\Helper;
 
-use H3\Constants;
-use H3\FaceProjection;
+use H3\Internal\Constants;
+use H3\Internal\FaceProjection;
 
 final readonly class BaseCell
 {

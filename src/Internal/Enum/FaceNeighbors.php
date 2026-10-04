@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace H3\Enum;
+namespace H3\Internal\Enum;
 
 /**
  * indexes for faceNeighbors table

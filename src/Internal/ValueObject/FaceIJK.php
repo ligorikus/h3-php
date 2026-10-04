@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace H3\ValueObject;
+namespace H3\Internal\ValueObject;
 
-use H3\FaceProjection;
 use H3\Exception\H3DomainException;
+use H3\Internal\FaceProjection;
 
 /**
  * Face number and ijk coordinates on that face-centered coordinate

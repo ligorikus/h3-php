@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace H3;
+namespace H3\Internal\Enum;
 
 enum H3IndexMode: int
 {

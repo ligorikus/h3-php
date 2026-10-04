@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace H3\Tests;
 
-use H3\Converter\Vec3dConverter;
-use H3\H3;
 use H3\Exception\H3DomainException;
 use H3\Exception\H3LatLngDomainException;
 use H3\Exception\H3ResolutionException;
-use H3\ValueObject\LatLng;
-use H3\ValueObject\Vec3d;
+use H3\H3;
+use H3\Internal\Converter\Vec3dConverter;
+use H3\Internal\ValueObject\Vec3d;
+use H3\Type\LatLng;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;

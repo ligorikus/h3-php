@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace H3\Converter;
+namespace H3\Internal\Converter;
 
-use H3\Constants;
-use H3\ValueObject\CoordIJK;
-use H3\ValueObject\Vec2d;
+use H3\Internal\Constants;
+use H3\Internal\ValueObject\CoordIJK;
+use H3\Internal\ValueObject\Vec2d;
 
 final readonly class CoordIJKConverter
 {

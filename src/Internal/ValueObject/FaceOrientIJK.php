@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace H3\ValueObject;
+namespace H3\Internal\ValueObject;
 
 final readonly class FaceOrientIJK
 {
