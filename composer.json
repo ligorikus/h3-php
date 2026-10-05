@@ -28,7 +28,9 @@
         }
     },
     "scripts": {
-        "test": "phpunit --fail-on-empty-test-suite"
+        "test": "phpunit --fail-on-empty-test-suite",
+        "research:differential": "php tools/research/research.php differential",
+        "research:benchmark": "php tools/research/research.php benchmark"
     },
     "keywords": [
         "geospatial",

@@ -40,6 +40,20 @@ The matrix resolves dependencies for each actual PHP version. A separate PHP 8.2
 job validates and installs `composer.lock`, audits dependencies, runs tests,
 PHPStan, and Psalm.
 
+### Manual differential research
+
+The repository also contains a reproducible, intentionally non-CI comparison
+against the official Uber H3 C library. Docker builds the pinned oracle; the
+correctness and performance results are written to separate reports.
+
+```bash
+composer research:differential
+composer research:benchmark
+```
+
+See [tools/research/README.md](tools/research/README.md) for corpus coverage,
+smoke-run options, version pinning, and benchmark methodology.
+
 ## Quick Start
 
 ```php
